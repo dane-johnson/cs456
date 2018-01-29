@@ -5,7 +5,7 @@
 The motivation for this project is to use Quicksort and Mergesort algorithms to practice empirical analysis of algorithms.
 This includes creating diagrams and statistics to prove my implementation of the algorithms is correct.
 
-Additionally, this project will serve as an exercise in writing psuedocode, proving its correctness and using invariants.
+Additionally, this project will serve as an exercise in writing pseudocode, proving its correctness and using invariants.
 
 \section{Algorithms}
 \subsection{Quicksort (Array)}
@@ -72,6 +72,11 @@ proc heapify(A, root, end)
 \subsubsection{Pseudocode}
 \begin{verbatim}
 proc heapsort(L)
+     build_heap(L)
+     end <- L.tail
+     while end ~= L.head
+           swap L.head.val and end.val
+           end <- 
 \end{verbatim}
 \section{Conclusion}
 \end{document}
