@@ -8,22 +8,70 @@ This includes creating diagrams and statistics to prove my implementation of the
 Additionally, this project will serve as an exercise in writing psuedocode, proving its correctness and using invariants.
 
 \section{Algorithms}
-\subsection{Heapsort (Array)}
+\subsection{Quicksort (Array)}
 \subsubsection{Pseudocode}
 \begin{verbatim}
 proc quicksort(A, start, end)
      if start < end
-        pivot = A[end]
-        i = start -1 
-        for j = start to end - 1
+        pivot <- A[end]
+        i <- start - 1 
+        for j <- start to end - 1
             if A[j] < pivot
                i++
                swap A[i] and A[j]
-             
-        
+     if A[end] < A[i + 1]
+        swap A[end] and A[i + 1]
+     quicksort(A, start, i)
+     quicksort(A, i + 2, end)
+\end{verbatim}
+\subsection{Quicksort (Linked List)}
+\subsubsection{Pseudocode}
+\begin{verbatim}
+proc quicksort(L, head, tail)
+     if head ~= null and tail ~=null and head ~= tail
+        pivot <- tail.val
+        mid <- curr <- head
+        last <- null
+        while curr ~= tail
+            if curr.val < pivot
+               swap curr.val and mid.val
+               last <- mid
+               mid <- mid.next
+            curr <- curr.next
+        if end.val < mid.val
+           swap end.val and mid.val
+     quicksort(A, start, last)
+     quicksort(A, mid.next, end)
+\end{verbatim}
+\subsection{Heapsort (Array)}
+\subsubsection{Pseudocode}
+\begin{verbatim}
+proc heapsort(A)
+     build_heap(A)
+     end <- A.length - 1
+     while end > 0
+           swap A[0] and A[end]
+           end <- end - 1
+           heapify(A, 0, end)
+proc build_heap(A)
+     start <- parent(A.length - 1)
+     while start >= 0
+           heapify(A, start, A.length - 1)
+           start--
+proc heapify(A, root, end)
+     while left(root) >= end
+           if right(root) >= end and A[right(root)] > A[root] and A[right(root)] > A[left(root)]
+              swap A[right(root)] and A[root]
+              root = right(root)
+           else if A[left(root)] > A[root]
+              swap A[left(root)] and A[root]
+              root = left(root)
+           else return
 \end{verbatim}
 \subsection{Heapsort (Linked List)}
-\subsection{Quicksort (Array)}
-\subsection{Quicksort (Linked List)}
+\subsubsection{Pseudocode}
+\begin{verbatim}
+proc heapsort(L)
+\end{verbatim}
 \section{Conclusion}
 \end{document}
