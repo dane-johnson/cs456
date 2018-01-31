@@ -1,11 +1,6 @@
 #ifndef SORTS_H_
 #define SORTS_H_
 
-typedef struct llnode {
-  int val;
-  struct llnode *next;
-} llnode;
-
 void array_swap(int arr[], int i, int j);
 void list_swap(llnode *a, llnode *b);
 
