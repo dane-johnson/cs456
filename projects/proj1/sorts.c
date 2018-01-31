@@ -1,7 +1,7 @@
-#include "stdio.h"
-#include "stdlib.h"
-#include "list.h"
-#include "sorts.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <list.h>
+#include <sorts.h>
 
 void array_swap(int arr[], int i, int j) {
   int temp = arr[i];
