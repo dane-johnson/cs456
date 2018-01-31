@@ -28,7 +28,7 @@ proc quicksort(A, start, end)
 \subsubsection{Pseudocode}
 \begin{verbatim}
 proc quicksort(L, head, tail)
-  if head ~= null and tail ~=null and head ~= tail
+  if head ~= null and tail ~= null and head ~= tail
     pivot <- tail.val
     mid <- curr <- head
     last <- null
@@ -37,7 +37,7 @@ proc quicksort(L, head, tail)
         swap curr.val and mid.val
         last <- mid
         mid <- mid.next
-        curr <- curr.next
+      curr <- curr.next
     if end.val < mid.val
       swap end.val and mid.val
     quicksort(A, start, last)
