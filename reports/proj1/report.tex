@@ -28,10 +28,10 @@ proc quicksort(A, start, end)
 \subsubsection{Pseudocode}
 \begin{verbatim}
 proc quicksort(L, head, tail)
-  if head ~= null and tail ~= null and head ~= tail
+  if head ~= nil and tail ~= nil and head ~= tail
     pivot <- tail.val
     mid <- curr <- head
-    last <- null
+    last <- nil
     while curr ~= tail
       if curr.val < pivot
         swap curr.val and mid.val
@@ -72,12 +72,8 @@ proc merge(A1, A2, A)
 \subsection{Heapsort (Linked List)}
 \subsubsection{Pseudocode}
 \begin{verbatim}
-proc heapsort(L)
-     build_heap(L)
-     end <- L.tail
-     while end ~= L.head
-           swap L.head.val and end.val
-           end <- 
+proc mergesort(L)
+  if L.next = nil
 \end{verbatim}
 \section{Conclusion}
 \end{document}
