@@ -74,6 +74,30 @@ proc merge(A1, A2, A)
 \begin{verbatim}
 proc mergesort(L)
   if L.next = nil
+    divide L into L1 and L2
+    mergesort(L1)
+    mergesort(L2)
+    merge(L, L1, L2)
+proc merge(L, L1, L2)
+  if L1.val < L2.val
+    L.head <- L1
+    L1 = L1.next
+  else
+    L.head <- L2
+    L2 = L2.next
+  while L1.next ~= nil or L2.next ~= nil
+    if L1.next = nil
+      L.next <- L2
+      L2 <- L2.next
+    else if L2.next = nil
+      L.next <- L1
+      L1 <- L1.next
+    else if L1.val > L2.val
+      L.next <- L2.next
+      L2 <- L2.next
+    else
+      L.next <- L1
+      L1 <- L1.next
 \end{verbatim}
 \section{Conclusion}
 \end{document}
