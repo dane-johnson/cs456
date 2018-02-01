@@ -2,8 +2,8 @@
 DEPS = sorts.h list.h
 OBJ = sorts.o generator.o
 
-test: $(OBJ) test.o
-	gcc -o $@ $^
+test: test.c $(OBJ)
+	gcc -g -o $@ $^
 
 %.o: %.c $(DEPS)
 	gcc -c -o $@ $<

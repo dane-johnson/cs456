@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "list.h"
 #include "sorts.h"
 
@@ -62,15 +63,42 @@ void quicksort_list(llnode *list, llnode *head, llnode *tail) {
 
 //////////////////// MERGESORT ////////////////////
 
+void copyarr(int dest[], int src[], int n) {
+  for (int i = 0; i < n; i++) {
+    dest[i] = src[i];
+  }
+}
+
 void mergesort_array(int arr[], int n) {
   if (n > 1) {
     int n1 = n / 2;
-    int n2 = n / 2 + n % 2;
+    int n2 = (n / 2) + (n % 2);
     int arr1[n1];
     int arr2[n2];
+    copyarr(arr1, arr, n1);
+    copyarr(arr2, arr + n1, n2);
+    mergesort_array(arr1, n1);
+    mergesort_array(arr2, n2);
+    merge_array(arr, arr1, arr2, n1, n2);
   }
 }
-void merge_array(int arr[], int arr1[], int arr2[]);
 
-
-
+void merge_array(int arr[], int arr1[], int arr2[], int n1, int n2){
+  int i = 0;
+  int j = 0;
+  while (i < n1 || j < n2) {
+    if (i == n1) {
+      arr[i + j] = arr2[j];
+      j++;
+    } else if (j == n2) {
+      arr[i + j] = arr1[i];
+      i++;
+    } else if (arr1[i] > arr2[j]) {
+      arr[i + j] = arr2[j];
+      j++;
+    } else {
+      arr[i + j] = arr1[i];
+      i++;
+    }
+  }
+}

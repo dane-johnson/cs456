@@ -9,5 +9,5 @@ void quicksort_array(int arr[], int start, int end);
 void quicksort_list(llnode *list, llnode *start, llnode *tail);
 //////////////////// MERGESORT ////////////////////
 void mergesort_array(int arr[], int n);
-void merge_array(int arr[], int arr1[], int arr2[]);
+void merge_array(int arr[], int arr1[], int arr2[], int n1, int n2);
 #endif // SORTS_H_
