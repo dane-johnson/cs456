@@ -5,3 +5,5 @@
 
 # Binaries
 *.o
+# ...from proj1
+projects/proj1/test
