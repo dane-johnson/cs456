@@ -1,14 +1,17 @@
 .PHONY = all test benchmark
+CFLAGS = 
 DEPS = sorts.h list.h
 OBJ = sorts.o generator.o
 
 all: benchmark test
 
-benchmark: benchmark.o $(OBJ)
-	gcc -o $@ $^
+benchmark: benchmark.c $(OBJ)
+	gcc $(CFLAGS) -o $@ $^
+clean:
+	rm -f *.o benchmark test
 
 test: test.c $(OBJ)
-	gcc -g -o $@ $^
+	gcc $(CFLAGS) -o $@ $^
 
 %.o: %.c $(DEPS)
-	gcc -c -o $@ $<
+	gcc $(CFLAGS) -c -o $@ $<

@@ -8,8 +8,8 @@
 
 void main() {
   printf("Testing generate_arr...\n");
-  int arr[1];
-  generate_arr(arr, 1, 2, 3);
+  int arr[10];
+  generate_arr(arr, 10, 2, 3);
   assert(arr[0] >= 2 && arr[0] <= 3);
   printf("Done\n");
 
