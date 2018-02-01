@@ -121,7 +121,7 @@ void split_list(llnode *list, llnode **list1, llnode **list2) {
 }
 
 void mergesort_list(llnode **list) {
-  if (*list->next != NULL) {
+  if ((*list)->next != NULL) {
     llnode *list1, *list2;
     split_list(*list, &list1, &list2);
     mergesort_list(&list1);
