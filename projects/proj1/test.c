@@ -43,4 +43,16 @@ void main() {
   mergesort_array(arr2, 3);
   assert(arr2[0] == 1 && arr2[2] == 3);
   printf("Done\n");
+
+  printf("Testing mergesort_list\n");
+  llnode *nodes1 = (llnode*)calloc(3, sizeof(llnode));
+  nodes1[0].val = 3;
+  nodes1[1].val = 2;
+  nodes1[2].val = 1;
+  nodes1[0].next = &nodes1[1];
+  nodes1[1].next = &nodes1[2];
+  nodes1[2].next = NULL;
+  mergesort_list(&nodes1);
+  assert(nodes1[0].val == 1 && nodes1[0].next->next->val == 3);
+  printf("Done\n");
 }
