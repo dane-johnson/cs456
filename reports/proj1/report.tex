@@ -1,4 +1,5 @@
 \documentclass[a4paper,12pt]{article}
+\usepackage{graphicx}
 \begin{document}
 \section{Motivation}
 
@@ -24,6 +25,8 @@ proc quicksort(A, start, end)
     quicksort(A, start, i)
     quicksort(A, i + 2, end)
 \end{verbatim}
+\subsubsection{Benchmark Data}
+\includegraphics[height=10cm]{quicksort_array}
 \subsection{Quicksort (Linked List)}
 \subsubsection{Pseudocode}
 \begin{verbatim}
@@ -43,6 +46,8 @@ proc quicksort(L, head, tail)
     quicksort(A, start, last)
     quicksort(A, mid.next, end)
 \end{verbatim}
+\subsubsection{Benchmark Data}
+\includegraphics[height=10cm]{quicksort_list}
 \subsection{Mergesort (Array)}
 \subsubsection{Pseudocode}
 \begin{verbatim}
@@ -69,11 +74,34 @@ proc merge(A1, A2, A)
       A[i + j] <- A2[j]
       j++     
 \end{verbatim}
+\subsubsection{Benchmark Data}
+\includegraphics[height=10cm]{mergesort_array}
 \subsection{Heapsort (Linked List)}
 \subsubsection{Pseudocode}
 \begin{verbatim}
 proc mergesort(L)
   if L.next = nil
+    split L into L1 and L2
+    mergesort(L1)
+    mergesort(L2)
+    merge(L1, L2, L)
+proc merge(L1, L2, L)
+  curr <- L.head
+  while L1 ~= nil and L2 ~= nil
+    if L1 = nil
+      curr.next <- L2
+      L2 <- L2.next
+    else if L2 = nil
+      curr.next <- L1
+      L1 <- L1.next
+    else if L1.val > L2.val
+      curr.next <- L2
+      L2 <- L2.next
+    else
+      curr.next <- L1
+      L1 <- L1.next
 \end{verbatim}
+\subsubsection{Benchmark Data}
+\includegraphics[height=10cm]{mergesort_list}
 \section{Conclusion}
 \end{document}

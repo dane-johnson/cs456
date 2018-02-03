@@ -1,3 +1,4 @@
 %:
 	[ ! -e builds ] && mkdir builds || :
-	cd builds && pdflatex ../proj$@/report.tex -output-directory builds
+	cd ./proj$@ && pdflatex report.tex
+	mv ./proj$@/report.pdf ./builds
