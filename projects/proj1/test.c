@@ -15,9 +15,9 @@ void main() {
 
   printf("Testing generate_list...\n");
   llnode* head;
-  generate_list(&head, 1, 2, 3);
+  generate_list(&head, 2, 2, 3);
   assert(head->val >= 2 && head->val <= 3);
-  assert(head->next == NULL);
+  assert(head->next != NULL);
   printf("Done\n");
 
   printf("Testing quicksort_array...\n");

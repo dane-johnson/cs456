@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
   init();
   int arr[n];
   llnode *list, *tail;
-  if (strcmp(argv[1], "quicksort_arr") == 0) {
+  if (strcmp(argv[1], "quicksort_array") == 0) {
     generate_arr(arr, n, min, max);
     quicksort_array(arr, 0, n - 1);
   } else if (strcmp(argv[1], "quicksort_list") == 0) {

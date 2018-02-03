@@ -21,8 +21,8 @@ void generate_list(llnode** head, int n, int min, int max) {
   curr->val = next_num;
   *head = curr;
   for (int i = 0; i < n - 1; i++) {
+    curr->next = (llnode*)malloc(sizeof(llnode));
     curr = curr->next;
-    curr = (llnode*)malloc(sizeof(llnode));
     next_num =  rand() % (max - min) + max;
   }
   curr->next = NULL;
