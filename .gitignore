@@ -1,7 +1,7 @@
 # Compiled LaTeX files
 *.aux
 *.log
-*.pdf
+reports/builds/*.pdf
 
 # Binaries
 *.o
