@@ -44,5 +44,13 @@ int main(int argc, char *argv[]) {
     tail = list;
     find_tail(&tail);
     quicksort_list(list, list, tail);
+  } else if (strcmp(argv[1], "mergesort_array") == 0) {
+    generate_arr(arr, n, min, max);
+    mergesort_array(arr, n);
+  } else if (strcmp(argv[1], "mergesort_list") == 0) {
+    generate_list(&list, n, min, max);
+    tail = list;
+    find_tail(&tail);
+    mergesort_list(&list);
   }
 }

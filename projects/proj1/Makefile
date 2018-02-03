@@ -1,5 +1,5 @@
 .PHONY = all test benchmark
-CFLAGS = 
+CFLAGS = -g
 DEPS = sorts.h list.h
 OBJ = sorts.o generator.o
 
