@@ -1,9 +1,10 @@
 # Compiled LaTeX files
 *.aux
 *.log
-*.pdf
+reports/builds/*.pdf
 
 # Binaries
 *.o
 # ...from proj1
 projects/proj1/test
+projects/proj1/benchmark

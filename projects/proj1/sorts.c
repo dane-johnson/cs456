@@ -102,3 +102,62 @@ void merge_array(int arr[], int arr1[], int arr2[], int n1, int n2){
     }
   }
 }
+
+void split_list(llnode *list, llnode **list1, llnode **list2) {
+  llnode *curr = list;
+  llnode *mid = list;
+  while (curr->next != NULL) {
+    curr = curr->next;
+    if (curr->next != NULL) {
+      curr = curr->next;
+      mid = mid->next;
+    }
+  }
+  // list 2 will point to the first node after the middle
+  *list2 = mid->next;
+  // Break the list into 2 lists
+  mid->next = NULL;
+  *list1 = list;
+}
+
+void mergesort_list(llnode **list) {
+  if ((*list)->next != NULL) {
+    llnode *list1, *list2;
+    split_list(*list, &list1, &list2);
+    mergesort_list(&list1);
+    mergesort_list(&list2);
+    merge_list(list, list1, list2);
+  }
+}
+
+void merge_list(llnode **list, llnode *list1, llnode *list2) {
+  llnode *curr;
+  if (list1->val < list2->val){
+    curr = list1;
+    list1 = list1->next;
+  } else {
+    curr = list2;
+    list2 = list2->next;
+  }
+  *list = curr;
+  while (list1 != NULL || list2 != NULL) {
+    if (list1 == NULL) {
+      curr->next = list2;
+      list2 = list2->next;
+      curr = curr->next;
+    } else if (list2 == NULL) {
+      curr->next = list1;
+      list1 = list1->next;
+      curr = curr->next;
+    } else if (list1->val > list2->val) {
+      curr->next = list2;
+      list2 = list2->next;
+      curr = curr->next;
+    } else {
+      curr->next = list1;
+      list1 = list1->next;
+      curr = curr->next;
+    }
+  }
+  curr->next = NULL;
+}

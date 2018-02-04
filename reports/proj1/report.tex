@@ -1,4 +1,5 @@
 \documentclass[a4paper,12pt]{article}
+\usepackage{graphicx}
 \begin{document}
 \section{Motivation}
 
@@ -24,6 +25,8 @@ proc quicksort(A, start, end)
     quicksort(A, start, i)
     quicksort(A, i + 2, end)
 \end{verbatim}
+\subsubsection{Benchmark Data}
+\includegraphics[height=10cm]{quicksort_array}
 \subsection{Quicksort (Linked List)}
 \subsubsection{Pseudocode}
 \begin{verbatim}
@@ -43,6 +46,8 @@ proc quicksort(L, head, tail)
     quicksort(A, start, last)
     quicksort(A, mid.next, end)
 \end{verbatim}
+\subsubsection{Benchmark Data}
+\includegraphics[height=10cm]{quicksort_list}
 \subsection{Mergesort (Array)}
 \subsubsection{Pseudocode}
 \begin{verbatim}
@@ -69,6 +74,8 @@ proc merge(A1, A2, A)
       A[i + j] <- A2[j]
       j++     
 \end{verbatim}
+\subsubsection{Benchmark Data}
+\includegraphics[height=10cm]{mergesort_array}
 \subsection{Heapsort (Linked List)}
 \subsubsection{Pseudocode}
 \begin{verbatim}
@@ -99,5 +106,7 @@ proc merge(L, L1, L2)
       L.next <- L1
       L1 <- L1.next
 \end{verbatim}
+\subsubsection{Benchmark Data}
+\includegraphics[height=10cm]{mergesort_list}
 \section{Conclusion}
 \end{document}
