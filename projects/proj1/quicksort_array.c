@@ -54,6 +54,13 @@ void print_array_into_file(FILE *fout, int arr[], int n) {
   }
 }
 
+void usage(char *invocation) {
+  printf("Usage: %s <infile> <outfile>\n", invocation);
+}
+
 int main(int argc, char *argv[]) {
-  
+  if (argc != 3) {
+    usage(argv[0]);
+    exit(1);
+  }
 }
