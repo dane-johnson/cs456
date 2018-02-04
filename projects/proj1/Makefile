@@ -1,17 +1,16 @@
-.PHONY = all test benchmark
+.PHONY = all
 CFLAGS = 
 DEPS = sorts.h list.h
 OBJ = sorts.o generator.o
+EXE = benchmark test quicksort_array
 
-all: benchmark test
+all: $(EXE)
 
-benchmark: benchmark.c $(OBJ)
-	gcc $(CFLAGS) -o $@ $^
 clean:
 	rm -f *.o benchmark test
 
-test: test.c $(OBJ)
-	gcc $(CFLAGS) -o $@ $^
-
 %.o: %.c $(DEPS)
 	gcc $(CFLAGS) -c -o $@ $<
+
+$(EXE): %: %.c $(OBJ)
+	gcc $(CFLAGS) -o $@ $^
