@@ -41,6 +41,19 @@ void read_file_into_array(FILE *fin, int arr[], int n) {
   }
 }
 
+void print_list_into_file(FILE *fout, llnode *list) {
+  while(list->next) {
+    fprintf(fout, "%d\n", list->val);
+    list = list->next;
+  }
+}
+
+void print_array_into_file(FILE *fout, int arr[], int n) {
+  for (int i = 0; i < n; i++) {
+    fprintf(fout, "%d\n", n[i]);
+  }
+}
+
 int main(int argc, char *argv[]) {
   
 }
