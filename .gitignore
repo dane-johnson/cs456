@@ -8,3 +8,11 @@ reports/builds/*.pdf
 # ...from proj1
 projects/proj1/test
 projects/proj1/benchmark
+projects/proj1/quicksort_array
+projects/proj1/quicksort_list
+projects/proj1/mergesort_array
+projects/proj1/mergesort_list
+
+# Archives
+*.tar.gz
+*.tgz
