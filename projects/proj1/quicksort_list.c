@@ -56,7 +56,7 @@ void print_array_into_file(FILE *fout, int arr[], int n) {
 }
 
 void usage(char *invocation) {
-  printf("Usage: %s <infile> <outfile>\n", invocation);
+  printf("Usage: %s <infile>\n", invocation);
 }
 
 void find_tail(llnode **tail) {
@@ -68,7 +68,7 @@ void find_tail(llnode **tail) {
 }
 
 int main(int argc, char *argv[]) {
-  if (argc != 3) {
+  if (argc != 2) {
     usage(argv[0]);
     exit(1);
   }
@@ -79,7 +79,9 @@ int main(int argc, char *argv[]) {
   tail = list;
   find_tail(&tail);
   quicksort_list(list, list, tail);
-  FILE *fout = fopen(argv[2], "w");
+  char outfile[BUF_SIZE];
+  sprintf(outfile, "quicksortlist-%s", argv[1]);
+  FILE *fout = fopen(outfile, "w");
   print_list_into_file(fout, list);
   fclose(fout);
 }
