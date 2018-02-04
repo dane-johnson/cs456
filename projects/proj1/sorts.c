@@ -57,7 +57,9 @@ void quicksort_list(llnode *list, llnode *head, llnode *tail) {
     }
     
     quicksort_list(list, head,  last);
-    quicksort_list(list, mid->next, tail);
+    if (mid != tail) {
+      quicksort_list(list, mid->next, tail);
+    }
   }
 }
 
