@@ -3,9 +3,11 @@
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \rhead{Dane Johnson}
-\begin{document}
 \title{CS-456 Project 1}
 \author{Dane Johnson}
+\date{2/7/18}
+\headheight=15pt
+\begin{document}
 \maketitle
 \newpage
 \section{Motivation}
@@ -53,12 +55,25 @@ proc quicksort(A, start, end)
   conditions of the invariant.
 \end{description}
 \subsection{Quicksort (Array)}
+\subsubsection{Issues}
+Quicksort as an array is easy enough to implement. Main problem would be assuring the list is partititioned correctly.
 \subsubsection{Benchmark Data}
 \includegraphics[height=10cm]{quicksort_array}
+\subsubsection{Observations}
+Quicksort behaves as expected. $O(nlg(n))$, which is best case for any sort, and is clearly seen in the data.
+$n$ iterations comes from the list being subdivided, ultimately, into $n$ lists. $lg(n)$ comes from partitioning the list, which
+halves in size each recursive call.
 \subsection{Quicksort (Linked List)}
+\subsubsection{Issues}
+A lot of issues crop up with Quicksorting a list. Without random access abilites, partitioning the list becomes a chore
+involving ensuring a pointer moving up the list remains before the tail value. A little bit of fudge is necessary to
+terminate before the incrementing pointer moves past the end of the sublist.
 \subsubsection{Benchmark Data}
 \includegraphics[height=10cm]{quicksort_list}
-\subsection{Mergesort (Array)}
+\subsubsection{Observations}
+The data does not reflect the expected $O(nlg(n))$ that is the theoretical big-O of quicksort. From the data, the actual trend
+appears to be $O(n^2)$. This is because 
+\subsection{Mergesort}
 \subsubsection{Pseudocode}
 \begin{verbatim}
 proc mergesort(A)
@@ -84,39 +99,32 @@ proc merge(A1, A2, A)
       A[i + j] <- A2[j]
       j++     
 \end{verbatim}
+\subsubsection{Correctness Proof}
+\begin{description}
+\item [Invariant: ] At the beginning of each iteration, $A1$ and $A2$ are sorted, $A$ contains the $i + j$ smallest elements
+  from $A1$ and $A2$ and $A1[i]$ and $A1[j]$ are the smallest values in their respective arrays that have not been copied into $A$.
+\item [Initilization: ] Initially $A[i]$ and $A[j]$ are both the first and therefore smallest values in thier respective arrays, and nothing has been
+  copied into $A$, so it is trivially sorted.
+\item [Maintenence: ] If $j = A2.length$ or $A1[i] < A2[i]$, then $i$ is the smallest value that has not been copied into $A$ and copying it into
+  $A$ means $A$ contains $i + j + 1$ sorted elements. This is true for $j$ in the cases where $i = A2.length$ or $A1[i] \geq A2[j]$.
+\item [Termination: ] When the loop completes, $i + j$ is the length of the two subarrays, which is the length of $A$. This impies that the entire array is sorted.
+\end{description}
+\subsection{Mergesort (Array)}
+\subsubsection{Issues}
+Again, no real issues implementing mergesort. I did hit a snag where I was overstepping the bounds of my array, but I added extra cases for them. Having
+now read the section in the book, I realized that an infinite sentinel value and a \texttt{for} loop could also have sufficed.
 \subsubsection{Benchmark Data}
 \includegraphics[height=10cm]{mergesort_array}
-\subsection{Heapsort (Linked List)}
-\subsubsection{Pseudocode}
-\begin{verbatim}
-proc mergesort(L)
-  if L.next = nil
-    divide L into L1 and L2
-    mergesort(L1)
-    mergesort(L2)
-    merge(L, L1, L2)
-proc merge(L, L1, L2)
-  if L1.val < L2.val
-    L.head <- L1
-    L1 = L1.next
-  else
-    L.head <- L2
-    L2 = L2.next
-  while L1.next ~= nil or L2.next ~= nil
-    if L1.next = nil
-      L.next <- L2
-      L2 <- L2.next
-    else if L2.next = nil
-      L.next <- L1
-      L1 <- L1.next
-    else if L1.val > L2.val
-      L.next <- L2.next
-      L2 <- L2.next
-    else
-      L.next <- L1
-      L1 <- L1.next
-\end{verbatim}
+\subsubsection{Observations}
+The data here seems to closely follow the expected runtime of $O(nlg(n))$. There are a few outliers near powers of two, but I expect those come from the computer's needing
+to free up memory to hold the additional stack space. The runtime complexity comes from merging $n$ arrays $lg(n)$ times to recreate the original array in sorted form.
+\subsection{Mergesort (Linked List)}
+\subsubsection{Issues}
+Splitting and combining linked lists requires a bit more attention than an array does, but ultimately when given consideration is not that much more difficult.
 \subsubsection{Benchmark Data}
 \includegraphics[height=10cm]{mergesort_list}
+\subsubsection{Observations}
+The data again seems to follow the expected runtime. There are a few more outliers in this implementation, but I am convinced that they are caused the same way as
+the arrays, just with greater extremes as a result of needing to pull stack space off the heap.
 \section{Conclusion}
 \end{document}
