@@ -5,7 +5,7 @@
 \rhead{Dane Johnson}
 \title{CS-456 Project 1}
 \author{Dane Johnson}
-\date{2/7/18}
+\date{February 7th, 2018}
 \headheight=15pt
 \begin{document}
 \maketitle
@@ -71,8 +71,9 @@ terminate before the incrementing pointer moves past the end of the sublist.
 \subsubsection{Benchmark Data}
 \includegraphics[height=10cm]{quicksort_list}
 \subsubsection{Observations}
-The data does not reflect the expected $O(nlg(n))$ that is the theoretical big-O of quicksort. From the data, the actual trend
-appears to be $O(n^2)$. This is because 
+After careful consideration, I have come to believe that the data returned from the benchmark does follow the expected $O(nlg(n))$
+complexity. The question remains as to why it is so much slower than the other algorithms. I think this is due to how much stack space is devoted to
+pointer arithmetic, and the fact that this memory was not freed at any point in the benchmark.
 \subsection{Mergesort}
 \subsubsection{Pseudocode}
 \begin{verbatim}
@@ -127,4 +128,15 @@ Splitting and combining linked lists requires a bit more attention than an array
 The data again seems to follow the expected runtime. There are a few more outliers in this implementation, but I am convinced that they are caused the same way as
 the arrays, just with greater extremes as a result of needing to pull stack space off the heap.
 \section{Conclusion}
+All in all, these sorts all have the same asymptotic time complexity given a random input series. In this average case, selecting quicksort or mergesort for an
+array comes down to a matter of taste. Quicksort, while somewhat less readable, uses less space than a mergesort, and provided the system has RAM enough, it should
+not be an issue. Quicksorting a list has proven to have significant overhead cost that mergesort would not present, so I would outright suggest the mergesort on a list.
+
+In the worst case, mergesort is the clear victor. Mergesort has no varience in execution based on input, besides which subarray is completed merging first.
+Mergesort therefore has a tight-bound, $\Theta(nlg(n))$. Quicksort does not have this property. Quicksort's speed is dependent on the selection of a pivot that comes as close as possible
+to bisecting the list. This means that if the list is in a sorted or reverse sorted order, or nearly enough to either, then quicksort is reduced to sorting $n$ sublists $n$ times.
+Therefore, while quicksort has $O(nlg(n))$ best case, it has $\Omega(n^2)$ as a worst case. Therefore, if there is a possibility that the input will be sorted or nearly sorted,
+mergesort should be selected.
+
+As far as the graphs, apart from the slight variations from the norm described in each section, they all follow the same $nlg(n)$ curve, as they are all run on random data sets.
 \end{document}
