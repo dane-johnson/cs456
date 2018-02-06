@@ -73,7 +73,8 @@ terminate before the incrementing pointer moves past the end of the sublist.
 \subsubsection{Observations}
 After careful consideration, I have come to believe that the data returned from the benchmark does follow the expected $O(nlg(n))$
 complexity. The question remains as to why it is so much slower than the other algorithms. I think this is due to how much stack space is devoted to
-pointer arithmetic, and the fact that this memory was not freed at any point in the benchmark.
+pointer arithmetic, and the fact that this memory was not freed at any point in the benchmark. Additionally, I think the high varience at high values
+of $n$ is due to CPU thrashing and caching.
 \subsection{Mergesort}
 \subsubsection{Pseudocode}
 \begin{verbatim}
