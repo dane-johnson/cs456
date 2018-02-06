@@ -7,6 +7,7 @@
 \title{CS-456 Project 1}
 \author{Dane Johnson}
 \maketitle
+\newpage
 \section{Motivation}
 
 The motivation for this project is to use Quicksort and Mergesort algorithms to practice empirical analysis of algorithms.
@@ -14,7 +15,7 @@ This includes creating diagrams and statistics to prove my implementation of the
 
 Additionally, this project will serve as an exercise in writing pseudocode, proving its correctness and using invariants.
 \section{Algorithms}
-\subsection{Quicksort (Array)}
+\subsection{Quicksort}
 \subsubsection{Pseudocode}
 \begin{verbatim}
 proc quicksort(A, start, end)
@@ -30,27 +31,31 @@ proc quicksort(A, start, end)
     quicksort(A, start, i)
     quicksort(A, i + 2, end)
 \end{verbatim}
+\subsubsection{Correctness Proof}
+\begin{description}
+\item [Invariant: ] Given $k$, a number between $start$ and $end$
+  \begin{enumerate}
+  \item If $start \leq k \leq i$ then $A[k] \leq pivot$
+  \item If $i + 1 \leq k \leq j - 1$ then $A[k] > pivot$
+  \item If $k = end$ then $A[k] = pivot$
+  \end{enumerate}
+\item [Initialization: ] Before the first loop, $start$ and $end$ are the same, so no values
+  lie in this range. Therefore the only $k$ that may be chosen id $end$, which is trivially
+  equivalent to $pivot$.
+\item [Maintenence: ] Two cases exist.
+  \begin{enumerate}
+  \item If $A[j] > pivot$, we merely increment $j$, and the second condition holds for $A[j - 1]$ and all other
+    entries are unchanged.
+  \item If $A[j] \leq pivot$, $A[i]$ is swapped with $A[j]$. Incrementing $j$ then gives $A[i] < pivot$, which satifies
+    the first condition.
+  \end{enumerate}
+\item [Termination: ] When the loop terminates $j = end$, and all values of the array now fall into one of the three
+  conditions of the invariant.
+\end{description}
+\subsection{Quicksort (Array)}
 \subsubsection{Benchmark Data}
 \includegraphics[height=10cm]{quicksort_array}
 \subsection{Quicksort (Linked List)}
-\subsubsection{Pseudocode}
-\begin{verbatim}
-proc quicksort(L, head, tail)
-  if head ~= nil and tail ~= nil and head ~= tail
-    pivot <- tail.val
-    mid <- curr <- head
-    last <- nil
-    while curr ~= tail
-      if curr.val < pivot
-        swap curr.val and mid.val
-        last <- mid
-        mid <- mid.next
-      curr <- curr.next
-    if end.val < mid.val
-      swap end.val and mid.val
-    quicksort(A, start, last)
-    quicksort(A, mid.next, end)
-\end{verbatim}
 \subsubsection{Benchmark Data}
 \includegraphics[height=10cm]{quicksort_list}
 \subsection{Mergesort (Array)}
