@@ -1,0 +1,28 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{fancyhdr}
+\author{Dane Johnson}
+\title{Linear Programming}
+\pagestyle{fancy}
+\begin{document}
+\maketitle
+\begin{enumerate}
+\item {\it What is the worst case of the simplex algorithm? Can you prove it mathematically?} The worst case of the
+  simplex algorithm in $O({{n+m}\choose{n}})$. This is because the basic and non-basic variables must be, at worst, pivoted
+  into every position, thus the combinatorial aspect of the time complexity.
+\item {\it What are the two main components of Linear programming?} The two main components of Linear programming are
+  linear inequalities and an objective function.
+\item {\it Provide a general algebraic formulation for Linear programming.} Given
+  \begin{enumerate}
+  \item Variables $\vec{x} = <x_{1}, x_{2}, \ldots, x_{n}>$
+  \item Objective function $\vec{c}\cdot\vec{x} = c_1x_1 + c_2x_2 + \ldots + c_nx_n$
+  \item Inequalities $A\vec{x} \leq \vec{b}$
+  \end{enumerate}
+  Maximize $\vec{c}\cdot\vec{x}$ s.t. $A\vec{x} \leq \vec{b}, \vec{x} \geq 0$
+\item {\it What is meant by the duality of Linear programming?} The duality of lLnear programming means that one
+  of the products of a Linear programming algorithm is a short certificate of optimization of the returned values.
+\item {\it Describe the shortest path algorithm using Linear programming.} To use Linear programming to solve shortest path,
+  generate all triangle inequalities to serve as the linear constraints, minimizing each of these values, and then
+  selecting the maximum value from the distance vector for each end point.
+\end{enumerate}
+
+\end{document}
