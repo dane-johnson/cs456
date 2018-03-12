@@ -57,3 +57,48 @@ class MinPriorityHeap:
     self.heap.append(Node(x, INFINITY))
     self.decrease_key(len(self.heap) - 1, key)
 
+class FibonacciHeap:
+  def __init__(self):
+    self.n = 0
+    self.min = None
+
+  def insert(self, x, key):
+    node = Node(x, key)
+    node.degree = 0
+    node.child = None
+    node.mark = False
+    if self.min == None:
+      node.left = node
+      node.right = node
+      self.min = node
+    else:
+      self.min.right.left = node
+      self.min.right = node
+      if node.key < self.min.key:
+        self.min = node
+    self.n += 1
+
+  def find_min(self):
+    return self.min.val
+
+## Merge list procedure
+## min1.right.left = min2.left
+## min2.left.right = min1.right
+## min1.right = min2
+## min2.left = min1
+def fib_heap_union(heap1, heap2):
+  new_heap = FibonacciHeap()
+  if heap1.min = None:
+    new_heap.min = heap2.min
+  elif heap2.min = None:
+    new_heap.min = heap1.min
+  else:
+    heap1.min.right.left = heap2.min.left
+    heap2.min.left.right = heap1.min.right
+    heap1.min.right = heap2.min
+    heap2.min.left = heap1.min
+    if heap1.min.key < heap2.min.key:
+      new_heap.min = heap1.min
+    else:
+      new_heap.min = heap2.min
+  new_heap.n = heap1.n + heap2.n
