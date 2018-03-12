@@ -119,3 +119,4 @@ def fib_heap_union(heap1, heap2):
     else:
       new_heap.min = heap2.min
   new_heap.n = heap1.n + heap2.n
+ 
