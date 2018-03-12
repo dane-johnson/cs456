@@ -8,10 +8,26 @@ def iright(i):
 def iparent(i):
   return (i - 1) / 2
 
+def dll_iterator(dll):
+  """Generates an iterator to loop over a doubly linked list"""
+  curr = dll
+  mylist = []
+  if curr == None:
+    return
+  while curr.right != dll:
+    mylist.append(curr)
+    curr = curr.right
+  return mylist
+
 class Node:
   def __init__(self, val, key):
     self.key = key
     self.val = val
+    self.right = self
+    self.left = self
+    self.parent = None
+    self.child = None
+    
   def __repr__(self):
     return str(self.__dict__)
   
@@ -86,12 +102,11 @@ class FibonacciHeap:
     my_min = self.min
     if my_min:
       ## Move all children of min to the root list
-      while my_min.child and my_min.child.parent == my_min:
-        temp = my_min.child
-        my_min.child = my_min.child.right
-        self.min.right.left = temp
-        self.min.right = temp
-        temp.parent = None
+      if my_min.child:
+        for child in dll_iterator(my_min.child):
+          self.min.right.left = child
+          self.min.right = child
+          child.parent = None
       ## remove the min from the root list
       self.min.right.left = self.min.left
       self.min.left.right = self.min.right
@@ -101,7 +116,58 @@ class FibonacciHeap:
         self.min = my_min.right
         self.consolidate()
       self.n -= 1
-    return my_min
+    return my_min.val
+
+  def consolidate(self):
+    """Recombine the heaps"""
+    A = [None] * (self.n + 1)
+    if self.min:
+      for node in dll_iterator(self.min):
+        x = node
+        d = x.degree
+        while A[d]:
+          y = A[d]
+          if x.key > y.key:
+            temp = x
+            x = y
+            y = temp
+          heap_link(y, x)
+          A[d] = None
+          d += 1
+        A[d] = x
+      self.min = None
+      for i in xrange(self.n + 1):
+        if A[i]:
+          if self.min == None:
+            ## Create the root list
+            self.min = A[i]
+            self.min.right = self.min
+            self.min.left = self.min
+          else:
+            ## add to root list
+            self.min.right.left = A[i]
+            A[i].right = self.min.right
+            self.min.right = A[i]
+            A[i].left = self.min
+            if A[i].key < self.min.key:
+              self.min = A[i]
+
+  def heap_link(self, y, x):
+    ## Remove y from root list
+    y.left.right = y.right
+    y.right.left = y.right
+    y.right = y
+    ## Make y a child of x
+    if x.child:
+      x.child.right.left = y
+      y.right = x.child.right
+      x.child.right = y
+      y.left = x.child
+    else:
+      y.right = y
+      y.left = y
+      x.child = y
+    y.mark = false
 
 def fib_heap_union(heap1, heap2):
   new_heap = FibonacciHeap()
@@ -119,4 +185,11 @@ def fib_heap_union(heap1, heap2):
     else:
       new_heap.min = heap2.min
   new_heap.n = heap1.n + heap2.n
- 
+
+fh = FibonacciHeap()
+fh.insert(1, 1)
+fh.insert(2, 2)
+fh.insert(3, 3)
+fh.insert(4, 4)
+print fh.extract_min()
+print fh.min
