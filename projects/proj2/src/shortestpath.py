@@ -65,6 +65,7 @@ class FibonacciHeap:
   def insert(self, x, key):
     node = Node(x, key)
     node.degree = 0
+    node.parent = None
     node.child = None
     node.mark = False
     if self.min == None:
@@ -81,16 +82,32 @@ class FibonacciHeap:
   def find_min(self):
     return self.min.val
 
-## Merge list procedure
-## min1.right.left = min2.left
-## min2.left.right = min1.right
-## min1.right = min2
-## min2.left = min1
+  def extract_min(self):
+    my_min = self.min
+    if my_min:
+      ## Move all children of min to the root list
+      while my_min.child and my_min.child.parent == my_min:
+        temp = my_min.child
+        my_min.child = my_min.child.right
+        self.min.right.left = temp
+        self.min.right = temp
+        temp.parent = None
+      ## remove the min from the root list
+      self.min.right.left = self.min.left
+      self.min.left.right = self.min.right
+      if my_min == my_min.right:
+        self.min = None
+      else:
+        self.min = my_min.right
+        self.consolidate()
+      self.n -= 1
+    return my_min
+
 def fib_heap_union(heap1, heap2):
   new_heap = FibonacciHeap()
-  if heap1.min = None:
+  if heap1.min == None:
     new_heap.min = heap2.min
-  elif heap2.min = None:
+  elif heap2.min == None:
     new_heap.min = heap1.min
   else:
     heap1.min.right.left = heap2.min.left
