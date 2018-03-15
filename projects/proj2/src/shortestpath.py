@@ -11,10 +11,11 @@ def iparent(i):
 def dll_iterator(dll):
   """Generates an iterator to loop over a doubly linked list"""
   curr = dll
-  mylist = []
   if curr == None:
     return
-  while curr.right != dll:
+  mylist = [curr]
+  curr = curr.right
+  while curr != dll:
     mylist.append(curr)
     curr = curr.right
   return mylist
@@ -89,7 +90,9 @@ class FibonacciHeap:
       node.right = node
       self.min = node
     else:
+      node.right = self.min.right
       self.min.right.left = node
+      node.left = self.min.right
       self.min.right = node
       if node.key < self.min.key:
         self.min = node
@@ -104,7 +107,9 @@ class FibonacciHeap:
       ## Move all children of min to the root list
       if my_min.child:
         for child in dll_iterator(my_min.child):
+          child.right = self.min.right
           self.min.right.left = child
+          child.left = self.min
           self.min.right = child
           child.parent = None
       ## remove the min from the root list
@@ -120,7 +125,7 @@ class FibonacciHeap:
 
   def consolidate(self):
     """Recombine the heaps"""
-    A = [None] * (self.n + 1)
+    A = [None] * 10 ##XXX: Replace 10 with correct calculation
     if self.min:
       for node in dll_iterator(self.min):
         x = node
@@ -131,7 +136,7 @@ class FibonacciHeap:
             temp = x
             x = y
             y = temp
-          heap_link(y, x)
+          self.heap_link(y, x)
           A[d] = None
           d += 1
         A[d] = x
@@ -155,7 +160,7 @@ class FibonacciHeap:
   def heap_link(self, y, x):
     ## Remove y from root list
     y.left.right = y.right
-    y.right.left = y.right
+    y.right.left = y.left 
     y.right = y
     ## Make y a child of x
     if x.child:
@@ -167,7 +172,7 @@ class FibonacciHeap:
       y.right = y
       y.left = y
       x.child = y
-    y.mark = false
+    y.mark = False
 
 def fib_heap_union(heap1, heap2):
   new_heap = FibonacciHeap()
@@ -192,4 +197,6 @@ fh.insert(2, 2)
 fh.insert(3, 3)
 fh.insert(4, 4)
 print fh.extract_min()
-print fh.min
+print fh.extract_min()
+print fh.extract_min()
+print fh.extract_min()
