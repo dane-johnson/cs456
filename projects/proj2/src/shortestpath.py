@@ -190,13 +190,3 @@ def fib_heap_union(heap1, heap2):
     else:
       new_heap.min = heap2.min
   new_heap.n = heap1.n + heap2.n
-
-fh = FibonacciHeap()
-fh.insert(1, 1)
-fh.insert(2, 2)
-fh.insert(3, 3)
-fh.insert(4, 4)
-print fh.extract_min()
-print fh.extract_min()
-print fh.extract_min()
-print fh.extract_min()
