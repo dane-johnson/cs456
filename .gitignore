@@ -5,6 +5,7 @@ reports/builds/*.pdf
 
 # Binaries
 *.o
+*.pyc
 # ...from proj1
 projects/proj1/test
 projects/proj1/benchmark

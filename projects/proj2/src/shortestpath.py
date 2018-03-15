@@ -1,4 +1,5 @@
 import sys
+import math
 INFINITY = sys.maxint
 
 def ileft(i):
@@ -19,6 +20,10 @@ def dll_iterator(dll):
     mylist.append(curr)
     curr = curr.right
   return mylist
+
+def D(n):
+  return math.floor(math.log(n)/math.log(2))
+  
 
 class Node:
   def __init__(self, val, key):
@@ -125,7 +130,7 @@ class FibonacciHeap:
 
   def consolidate(self):
     """Recombine the heaps"""
-    A = [None] * 10 ##XXX: Replace 10 with correct calculation
+    A = [None] * (D(self.n) + 1)
     if self.min:
       for node in dll_iterator(self.min):
         x = node
@@ -141,7 +146,7 @@ class FibonacciHeap:
           d += 1
         A[d] = x
       self.min = None
-      for i in xrange(self.n + 1):
+      for i in xrange(D(self.n) + 1):
         if A[i]:
           if self.min == None:
             ## Create the root list
