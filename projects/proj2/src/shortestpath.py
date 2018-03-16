@@ -2,6 +2,8 @@ import os
 import sys
 import copy
 import math
+from collections import OrderedDict
+
 INFINITY = sys.maxint
 
 def ileft(i):
@@ -243,7 +245,7 @@ def floyd_warshall(graph):
 
 def make_adj_matrix(graph):
   adj_matrix = [0] * len(graph)
-  for i, start in enumerate(graph.keys()):
+  for i, start in enumerate(graph):
     adj_matrix[i] = [0] * len(graph)
     for j, dest in enumerate(graph):
       if dest == start:
@@ -273,11 +275,11 @@ def usage():
   quit()
 
 def parse(alllines):
-  graph = {}
+  graph = OrderedDict()
   for line in alllines.splitlines():
     nums = line.split(" ")
     key = nums[0]
-    graph[key] = {}
+    graph[key] = OrderedDict()
     for vw in nums[1:]:
       v, w = vw.split(":")
       graph[key][v] = int(w)
