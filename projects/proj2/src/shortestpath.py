@@ -1,4 +1,6 @@
+import os
 import sys
+import copy
 import math
 INFINITY = sys.maxint
 
@@ -199,6 +201,8 @@ def fib_heap_union(heap1, heap2):
 
 #################### JOHNSON ####################
 
+
+
 #################### FLOYD-WARSHALL ####################
 
 def floyd_warshall(graph):
@@ -214,9 +218,9 @@ def floyd_warshall(graph):
       D[i][j] = [0] * n
       P[i][j] = [0] * n
 
-  D[0] = W
-  for i, v in D[0]:
-    for j, w in D[0][i]:
+  D[0] = copy.deepcopy(W)
+  for i, v in enumerate(D[0]):
+    for j, w in enumerate(D[0][i]):
       if D[0][i][j] == 0 or D[0][i][j] == INFINITY:
         P[0][i][j] = None
       else:
@@ -225,5 +229,59 @@ def floyd_warshall(graph):
   for h in xrange(1, n + 1):
     for i in xrange(n):
       for j in xrange(n):
-        D[h][i][j] = min(D[h-1][i][j], D[h-1][i][h] + D[h-1][h][j])
-        if D[h][i][] > 
+        D[h][i][j] = min(D[h-1][i][j], D[h-1][i][h-1] + D[h-1][h-1][j])
+        if D[h][i][j] > D[h-1][i][h-1] + D[h-1][h-1][j]:
+          P[h][i][j] = P[h][h-1][j]
+          
+  ## Make infinities -1 to match sample output      
+  retval = copy.deepcopy(D[n])
+  for i, row in enumerate(retval):
+    for j, val in enumerate(row):
+      if val >= INFINITY:
+        retval[i][j] = -1
+  return retval
+
+def make_adj_matrix(graph):
+  adj_matrix = [0] * len(graph)
+  for i, start in enumerate(graph.keys()):
+    adj_matrix[i] = [0] * len(graph)
+    for j, dest in enumerate(graph):
+      if dest == start:
+        adj_matrix[i][j] = 0
+      elif dest in graph[start]:
+        adj_matrix[i][j] = graph[start][dest]
+      else:
+        adj_matrix[i][j] = INFINITY
+  return adj_matrix
+
+def main():
+  if len(sys.argv) != 2:
+    usage()
+  else:
+    with open(sys.argv[1], "r") as fin:
+      alllines = fin.read()
+    graph = parse(alllines)
+    apsp = floyd_warshall(graph)
+    with open(os.path.basename(sys.argv[1]) + "Out.txt", "w") as fout:
+      for row in apsp:
+        for val in row:
+          fout.write("%d " % val)
+        fout.write("\n")
+
+def usage():
+  print "Usage: %s filename" % sys.argv[0]
+  quit()
+
+def parse(alllines):
+  graph = {}
+  for line in alllines.splitlines():
+    nums = line.split(" ")
+    key = nums[0]
+    graph[key] = {}
+    for vw in nums[1:]:
+      v, w = vw.split(":")
+      graph[key][v] = int(w)
+  return graph
+
+if __name__ == "__main__":
+  main()
