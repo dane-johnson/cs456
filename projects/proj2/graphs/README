@@ -1,0 +1,17 @@
+CS456 Spring 2018 PR02: Sample Graphs
+=====================================
+
+CONTENT
+-------
+This archive contains a batch of graphs that can be used for PR02 testing purposes. The archive contains undirected, non-negative weight graphs in two sets -- sparse and dense. Sparse graphs have ~30% the edges of a complete graph while the dense have ~75% the edges of a complete graph. The sizes of graphs are 10, 20, 40, 80, 160, and 360. The graphs are not guaranteed to be connected graphs, especially the sparse ones. The graphs under .graph extension. 
+
+Sample single source shortest path solutions using Dijkstra's Algorithm is also included with the graphs for verification purposes. These can be found under .distances extension. 
+
+NOTE
+----
+The solutions are for SSSP. You are, in this assignment, solving APSP. The sample solutions are listed here merely for graph verification purposes. 
+
+CREDIT
+------
+Jacob Hendricks
+

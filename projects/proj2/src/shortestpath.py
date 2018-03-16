@@ -22,6 +22,7 @@ def dll_iterator(dll):
   return mylist
 
 def D(n):
+  """D(n) = floor(lg(n))"""
   return math.floor(math.log(n)/math.log(2))
   
 
@@ -195,3 +196,34 @@ def fib_heap_union(heap1, heap2):
     else:
       new_heap.min = heap2.min
   new_heap.n = heap1.n + heap2.n
+
+#################### JOHNSON ####################
+
+#################### FLOYD-WARSHALL ####################
+
+def floyd_warshall(graph):
+  n = len(graph)
+  W = make_adj_matrix(graph)
+  
+  D = [0] * (n + 1)
+  P = [0] * (n + 1)
+  for i in xrange(n + 1):
+    D[i] = [0] * n
+    P[i] = [0] * n
+    for j in xrange(n):
+      D[i][j] = [0] * n
+      P[i][j] = [0] * n
+
+  D[0] = W
+  for i, v in D[0]:
+    for j, w in D[0][i]:
+      if D[0][i][j] == 0 or D[0][i][j] == INFINITY:
+        P[0][i][j] = None
+      else:
+        P[0][i][j] = i
+
+  for h in xrange(1, n + 1):
+    for i in xrange(n):
+      for j in xrange(n):
+        D[h][i][j] = min(D[h-1][i][j], D[h-1][i][h] + D[h-1][h][j])
+        if D[h][i][] > 
