@@ -5,6 +5,7 @@ import math
 from collections import OrderedDict
 
 INFINITY = sys.maxint
+JOHNSON_KEY = "JOHNSON_KEY"
 
 def ileft(i):
   return i * 2 + 1
@@ -46,6 +47,8 @@ class MinPriorityHeap:
   def __init__(self):
     self.heap = []
 
+  def __len__(self):
+    return len(self.heap)
   def heap_swap(self, i, j):
     "Swaps two values of the heap"
     temp = self.heap[i]
@@ -79,6 +82,11 @@ class MinPriorityHeap:
     while i > 0 and self.heap[iparent(i)].key > self.heap[i].key:
       self.heap_swap(i, iparent(i))
       i = iparent(i)
+
+  def get_index(self, x):
+    for i, node in enumerate(self.heap):
+      if node.val == x:
+        return i
 
   def insert(self, x, key):
     self.heap.append(Node(x, INFINITY))
@@ -200,9 +208,9 @@ class FibonacciHeap:
     ## Remove x from y's list and decrement y.degree
     x.right.left = x.left
     x.left.right = x.right
-    if y.child = x and x != x.right:
+    if y.child == x and x != x.right:
       y.child = x.right
-    elif y.child = x:
+    elif y.child == x:
       y.child = None
     y.degree -= 1
 
@@ -241,6 +249,8 @@ def fib_heap_union(heap1, heap2):
       new_heap.min = heap2.min
   new_heap.n = heap1.n + heap2.n
 
+#################### BELLMAN-FORD ####################
+
 def bellman_ford(graph, source):
   """Performs the bellman-ford SSSP algorithm"""
   distance = {}
@@ -266,7 +276,49 @@ def bellman_ford(graph, source):
 
   return distance, predecessor
 
+#################### DIJKSTRA ####################
+
+def dijkstra_min_heap(graph, source):
+  """Dijkstra's algorithm using a min heap for PQ"""
+  unvisited = MinPriorityHeap()
+  distance = OrderedDict()
+  parent = OrderedDict()
+  for src in graph:
+    unvisited.insert(src, INFINITY)
+    distance[src] = INFINITY
+    parent[src] = None
+    
+  distance[source] = 0
+  unvisited.decrease_key(unvisited.get_index(source), 0)
+  
+  while len(unvisited) > 0:
+    src = unvisited.extract_min()
+    for dest in graph[src]:
+      if distance[dest] > distance[src] + graph[src][dest]:
+        distance[dest] = distance[src] + graph[src][dest]
+        unvisited.decrease_key(unvisited.get_index(dest), distance[dest])
+
+  return distance.values()
+  
+
 #################### JOHNSON ####################
+
+def johnson(graph, dijkstra):
+  """Runs Johnson's algorithm on a graph. Must be given an implementation of Dijkstra's algorithm"""
+  new_node = {}
+  for node in graph:
+    new_node[node] = 0
+  graph[JOHNSON_KEY] = new_node
+
+  ## This will throw an exception if there are negative weight cycles
+  distance, predecessor = bellman_ford(graph, JOHNSON_KEY)
+  for src in graph:
+    for dest in graph:
+      if dest in graph[src]:
+        graph[src][dest] += (distance[src] - distance[dest])
+  del graph[JOHNSON_KEY]
+
+  
 
 
 #################### FLOYD-WARSHALL ####################
