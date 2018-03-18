@@ -184,6 +184,46 @@ class FibonacciHeap:
       x.child = y
     y.mark = False
 
+  def decrease_key(self, x, k):
+    if k > x.key:
+      raise Exception("New key is larger than current key")
+    else:
+      x.key = k
+      y = x.parent
+      if y and x.key < y.key:
+        self.cut(x, y)
+        self.cascading_cut(y)
+      if x.key < self.min.key:
+        self.min = x
+
+  def cut(self, x, y):
+    ## Remove x from y's list and decrement y.degree
+    x.right.left = x.left
+    x.left.right = x.right
+    if y.child = x and x != x.right:
+      y.child = x.right
+    elif y.child = x:
+      y.child = None
+    y.degree -= 1
+
+    ## Add x to the min root list
+    x.right = self.min.right
+    self.min.right.left = x
+    x.left = self.min.right
+    self.min.right = x
+
+    x.parent = None
+    x.mark = False
+
+  def cascading_cut(y):
+    z = y.parent
+    if z:
+      if not y.mark:
+        y.mark = True
+      else:
+        cut(y, z)
+        cascading_cut(z) 
+
 def fib_heap_union(heap1, heap2):
   new_heap = FibonacciHeap()
   if heap1.min == None:
