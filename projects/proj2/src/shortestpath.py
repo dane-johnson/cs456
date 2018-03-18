@@ -318,8 +318,14 @@ def johnson(graph, dijkstra):
         graph[src][dest] += (distance[src] - distance[dest])
   del graph[JOHNSON_KEY]
 
-  
+  adj_matrix = []
+  for src in graph:
+    adj_matrix.append(dijkstra(graph, src))
+  return adj_matrix
 
+def johnson_min_heap(graph):
+  """Runs Johnson's algorithm, using Min Heap implementation of Dijkstra's algorithm"""
+  return johnson(graph, dijkstra_min_heap)
 
 #################### FLOYD-WARSHALL ####################
 
