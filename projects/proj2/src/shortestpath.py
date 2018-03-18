@@ -201,8 +201,32 @@ def fib_heap_union(heap1, heap2):
       new_heap.min = heap2.min
   new_heap.n = heap1.n + heap2.n
 
-#################### JOHNSON ####################
+def bellman_ford(graph, source):
+  """Performs the bellman-ford SSSP algorithm"""
+  distance = {}
+  predecessor = {}
+  edges = []
+  
+  for src in graph:
+    distance[src] = INFINITY
+    predecessor[src] = None
+    for dest in graph[src]:
+      edges.append((src, dest, graph[src][dest]))
+  distance[source] = 0
 
+  for i in xrange(len(graph) - 1):
+    for src, dest, w in edges:
+      if distance[src] + w < distance[dest]:
+        distance[dest] = distance[src] + w
+        predecessor[dest] = src
+
+  for src, dest, w in edges:
+    if distance[src] + w < distance[dest]:
+      raise Exception("Graph contains a negative weight cycle")
+
+  return distance, predecessor
+
+#################### JOHNSON ####################
 
 
 #################### FLOYD-WARSHALL ####################
