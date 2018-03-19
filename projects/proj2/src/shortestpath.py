@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 import copy
 import math
 from collections import OrderedDict
@@ -378,6 +379,23 @@ def make_adj_matrix(graph):
         adj_matrix[i][j] = INFINITY
   return adj_matrix
 
+def find_average_time(graph, fn, n=10):
+  """Runs the given algorithm n times and returns the output and average time"""
+  times = []
+  for i in xrange(n):
+    t1 = time.now()
+    out = fn(graph)
+    t2 = time.now()
+    times[i] = t2 - t1
+  avg = sum(times) / n
+  return out, avg
+
+def write_adj_list(fout, adj_list):
+  for row in adj_list:
+    for val in row:
+      fout.write("%d " % val)
+    fout.write("\n")
+
 def main():
   if len(sys.argv) != 2:
     usage()
@@ -385,12 +403,15 @@ def main():
     with open(sys.argv[1], "r") as fin:
       alllines = fin.read()
     graph = parse(alllines)
-    apsp = floyd_warshall(graph)
+    bf_out, bf_time = find_average_time(graph, bellman_ford)
+    dmh_out, dmh_time = find_average_time(graph, dijkstra_min_heap)
     with open(os.path.basename(sys.argv[1]) + "Out.txt", "w") as fout:
-      for row in apsp:
-        for val in row:
-          fout.write("%d " % val)
-        fout.write("\n")
+      fout.write("Bellman-Ford time: %f seconds\n" % bf_time)
+      fout.write("Dijkstra Min-Priority-Heap time: %f seconds\n" % dmh_time)
+      fout.write("--------------------BELLMAN-FORD--------------------n")
+      write_adj_list(fout, bf_out)
+      fout.write("--------------------DIJKSTRA-MIN-PRIORITY-HEAP--------------------n")
+      write_adj_list(fout, dmh_out)
 
 def usage():
   print "Usage: %s filename" % sys.argv[0]
