@@ -412,7 +412,7 @@ def main():
     graph = parse(alllines)
     fw_out, fw_time = find_average_time(graph, floyd_warshall)
     jmh_out, jmh_time = find_average_time(graph, johnson_min_heap)
-    with open(os.path.basename(sys.argv[1]) + "Out.txt", "w") as fout:
+    with open(os.path.splitext(os.path.basename(sys.argv[1]))[0] + "Out" + os.path.splitext(sys.argv[1])[1], "w") as fout:
       fout.write("Floyd-Warshall time: %f seconds\n" % fw_time)
       fout.write("Johnson Min-Priority-Heap time: %f seconds\n" % jmh_time)
       fout.write("--------------------FLOYD-WARSHALL--------------------\n")
