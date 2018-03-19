@@ -407,8 +407,7 @@ def main():
   if len(sys.argv) != 2:
     usage()
   else:
-    with open(sys.argv[1], "r") as fin:
-      alllines = fin.read()
+    alllines = readfile(sys.argv[1])
     graph = parse(alllines)
     fw_out, fw_time = find_average_time(graph, floyd_warshall)
     jmh_out, jmh_time = find_average_time(graph, johnson_min_heap)
@@ -423,6 +422,11 @@ def main():
 def usage():
   print "Usage: %s filename" % sys.argv[0]
   quit()
+
+def readfile(filename):
+  with open(filename, "r") as fin:
+    alllines = fin.read()
+  return alllines
 
 def parse(alllines):
   graph = OrderedDict()
