@@ -322,7 +322,14 @@ def johnson(graph, dijkstra):
   adj_matrix = []
   for src in graph:
     adj_matrix.append(dijkstra(graph, src))
-  return adj_matrix
+    
+    ## Make infinities -1 to match sample output      
+  retval = copy.deepcopy(adj_matrix)
+  for i, row in enumerate(retval):
+    for j, val in enumerate(row):
+      if val >= INFINITY:
+        retval[i][j] = -1
+  return retval
 
 def johnson_min_heap(graph):
   """Runs Johnson's algorithm, using Min Heap implementation of Dijkstra's algorithm"""
@@ -383,10 +390,10 @@ def find_average_time(graph, fn, n=10):
   """Runs the given algorithm n times and returns the output and average time"""
   times = []
   for i in xrange(n):
-    t1 = time.now()
+    t1 = time.time()
     out = fn(graph)
-    t2 = time.now()
-    times[i] = t2 - t1
+    t2 = time.time()
+    times.append(t2 - t1)
   avg = sum(times) / n
   return out, avg
 
@@ -403,15 +410,15 @@ def main():
     with open(sys.argv[1], "r") as fin:
       alllines = fin.read()
     graph = parse(alllines)
-    bf_out, bf_time = find_average_time(graph, bellman_ford)
-    dmh_out, dmh_time = find_average_time(graph, dijkstra_min_heap)
+    fw_out, fw_time = find_average_time(graph, floyd_warshall)
+    jmh_out, jmh_time = find_average_time(graph, johnson_min_heap)
     with open(os.path.basename(sys.argv[1]) + "Out.txt", "w") as fout:
-      fout.write("Bellman-Ford time: %f seconds\n" % bf_time)
-      fout.write("Dijkstra Min-Priority-Heap time: %f seconds\n" % dmh_time)
-      fout.write("--------------------BELLMAN-FORD--------------------n")
-      write_adj_list(fout, bf_out)
-      fout.write("--------------------DIJKSTRA-MIN-PRIORITY-HEAP--------------------n")
-      write_adj_list(fout, dmh_out)
+      fout.write("Floyd-Warshall time: %f seconds\n" % fw_time)
+      fout.write("Johnson Min-Priority-Heap time: %f seconds\n" % jmh_time)
+      fout.write("--------------------FLOYD-WARSHALL--------------------\n")
+      write_adj_list(fout, fw_out)
+      fout.write("--------------------JOHNSON-MIN-PRIORITY-HEAP--------------------\n")
+      write_adj_list(fout, jmh_out)
 
 def usage():
   print "Usage: %s filename" % sys.argv[0]
