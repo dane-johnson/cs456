@@ -233,23 +233,6 @@ class FibonacciHeap:
         cut(y, z)
         cascading_cut(z) 
 
-def fib_heap_union(heap1, heap2):
-  new_heap = FibonacciHeap()
-  if heap1.min == None:
-    new_heap.min = heap2.min
-  elif heap2.min == None:
-    new_heap.min = heap1.min
-  else:
-    heap1.min.right.left = heap2.min.left
-    heap2.min.left.right = heap1.min.right
-    heap1.min.right = heap2.min
-    heap2.min.left = heap1.min
-    if heap1.min.key < heap2.min.key:
-      new_heap.min = heap1.min
-    else:
-      new_heap.min = heap2.min
-  new_heap.n = heap1.n + heap2.n
-
 #################### BELLMAN-FORD ####################
 
 def bellman_ford(graph, source):
