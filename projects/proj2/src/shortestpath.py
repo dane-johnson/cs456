@@ -5,7 +5,7 @@ import copy
 import math
 from collections import OrderedDict
 
-INFINITY = sys.maxint
+INFINITY = float('inf')
 JOHNSON_KEY = "JOHNSON_KEY"
 
 def ileft(i):
@@ -313,22 +313,26 @@ def dijkstra_fibonacci(graph, source):
 
 def johnson(graph, dijkstra):
   """Runs Johnson's algorithm on a graph. Must be given an implementation of Dijkstra's algorithm"""
+  my_graph = copy.deepcopy(graph)
   new_node = {}
-  for node in graph:
+  for node in my_graph:
     new_node[node] = 0
-  graph[JOHNSON_KEY] = new_node
+  my_graph[JOHNSON_KEY] = new_node
 
   ## This will throw an exception if there are negative weight cycles
-  distance, predecessor = bellman_ford(graph, JOHNSON_KEY)
-  for src in graph:
-    for dest in graph:
-      if dest in graph[src]:
-        graph[src][dest] += (distance[src] - distance[dest])
-  del graph[JOHNSON_KEY]
+  distance, predecessor = bellman_ford(my_graph, JOHNSON_KEY)
+  for src in my_graph:
+    for dest in my_graph:
+      if dest in my_graph[src]:
+        my_graph[src][dest] += (distance[src] - distance[dest])
+  del my_graph[JOHNSON_KEY]
 
   adj_matrix = []
-  for src in graph:
-    adj_matrix.append(dijkstra(graph, src))
+  for src in my_graph:
+    prime = dijkstra(my_graph, src)
+    for j, dest in enumerate(my_graph):
+      prime[j] += (distance[dest] - distance[src])
+    adj_matrix.append(prime)
     
     ## Make infinities -1 to match sample output      
   retval = copy.deepcopy(adj_matrix)
