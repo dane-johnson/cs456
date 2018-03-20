@@ -29,7 +29,7 @@ def dll_iterator(dll):
 
 def D(n):
   """D(n) = floor(lg(n))"""
-  return int(math.floor(math.log(n)/math.log(2)))
+  return int(math.floor(math.log(n)/math.log(2))) + 1
   
 
 class Node:
