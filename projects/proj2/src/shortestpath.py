@@ -279,9 +279,8 @@ def bellman_ford(graph, source):
 
 #################### DIJKSTRA ####################
 
-def dijkstra_min_heap(graph, source):
-  """Dijkstra's algorithm using a min heap for PQ"""
-  unvisited = MinPriorityHeap()
+def dijkstra(graph, source, unvisited):
+  """Dijkstra's algorithm using a passed in data structure for unvisited"""
   distance = OrderedDict()
   
   for src in graph:
@@ -299,7 +298,16 @@ def dijkstra_min_heap(graph, source):
         unvisited.decrease_key(unvisited.get_index(dest), distance[dest])
 
   return distance.values()
-  
+
+def dijkstra_min_heap(graph, source):
+  """Dijkstra's algorith implemented with a Min Priority Heap"""
+  unvisited = MinPriorityHeap()
+  return dijkstra(graph, source, unvisited)
+
+def dijkstra_fibonacci(graph, source):
+  """Dijkstra's algorithm implemented with a Fibonacci Heap"""
+  unvisited = FibonacciHeap()
+  return dijkstra(graph, source, unvisited)
 
 #################### JOHNSON ####################
 
