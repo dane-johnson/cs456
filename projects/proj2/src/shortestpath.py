@@ -29,7 +29,7 @@ def dll_iterator(dll):
 
 def D(n):
   """D(n) = floor(lg(n))"""
-  return math.floor(math.log(n)/math.log(2))
+  return int(math.floor(math.log(n)/math.log(2)))
   
 
 class Node:
@@ -98,6 +98,9 @@ class FibonacciHeap:
     self.n = 0
     self.min = None
 
+  def __len__(self):
+    return self.n
+
   def insert(self, x, key):
     node = Node(x, key)
     node.degree = 0
@@ -111,7 +114,7 @@ class FibonacciHeap:
     else:
       node.right = self.min.right
       self.min.right.left = node
-      node.left = self.min.right
+      node.left = self.min
       self.min.right = node
       if node.key < self.min.key:
         self.min = node
@@ -191,6 +194,8 @@ class FibonacciHeap:
       y.right = y
       y.left = y
       x.child = y
+    x.degree += 1
+    y.parent = x
     y.mark = False
 
   def decrease_key(self, x, k):
@@ -218,20 +223,32 @@ class FibonacciHeap:
     ## Add x to the min root list
     x.right = self.min.right
     self.min.right.left = x
-    x.left = self.min.right
+    x.left = self.min
     self.min.right = x
-
+    if x.key < self.min.key:
+      self.min = x
+      
     x.parent = None
     x.mark = False
 
-  def cascading_cut(y):
+  def cascading_cut(self, y):
     z = y.parent
     if z:
       if not y.mark:
         y.mark = True
       else:
-        cut(y, z)
-        cascading_cut(z) 
+        self.cut(y, z)
+        self.cascading_cut(z)
+
+  def get_index(self, val):
+    queue = [self.min]
+    while len(queue) > 0:
+      curr = queue.pop()
+      for node in dll_iterator(curr):
+        if node.val == val:
+          return node
+        if node.child:
+          queue.insert(0, node.child)
 
 #################### BELLMAN-FORD ####################
 
@@ -409,10 +426,13 @@ def main():
     with open(os.path.splitext(os.path.basename(sys.argv[1]))[0] + "Out" + os.path.splitext(sys.argv[1])[1], "w") as fout:
       fout.write("Floyd-Warshall time: %f seconds\n" % fw_time)
       fout.write("Johnson Min-Priority-Heap time: %f seconds\n" % jmh_time)
+      fout.write("Johnson Fibonacci-Heap time: %f seconds\n" % fh_time)
       fout.write("--------------------FLOYD-WARSHALL--------------------\n")
       write_adj_list(fout, fw_out)
       fout.write("--------------------JOHNSON-MIN-PRIORITY-HEAP--------------------\n")
       write_adj_list(fout, jmh_out)
+      fout.write("--------------------JOHNSON-FIBONACCI-HEAP--------------------\n")
+      write_adj_list(fout, fh_out)
 
 def usage():
   print "Usage: %s filename" % sys.argv[0]
@@ -436,3 +456,10 @@ def parse(alllines):
 
 if __name__ == "__main__":
   main()
+
+q = FibonacciHeap()
+q.insert('a', 1)
+q.insert('b', 2)
+q.insert('c', 3)
+q.insert('d', 4)
+q.extract_min()
