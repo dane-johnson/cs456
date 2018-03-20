@@ -1,0 +1,99 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\lstset
+{
+  numbers=left,
+}
+\pagestyle{fancy}
+\rhead{Dane Johnson}
+\title{CS-456 Project 2}
+\author{Dane Johnson}
+\date{March 21st, 2018}
+\headheight=15pt
+\begin{document}
+\maketitle
+\newpage
+\section{Motivation}
+
+This project is meant to be a comparison of several different algorithms for finding All-Pairs-Shortest-Path.
+The algorithms being compared are Floyd-Warshall, Johnson's using a Min-Priority Heap and Johnson's using a Fibonacci Heap. 
+
+\section{Algorithms}
+\subsection{Floyd-Warshall}
+\subsubsection{Pseudocode}
+\begin{lstlisting}[mathescape=true]
+proc floyd-warshall(W)
+  n $\gets$ W.rows
+  D[0] $\gets$ W
+  for k $\gets$ 1 to n
+    D[k] $\gets$ new n$\times$n matrix
+    for i $\gets$ 1 to n
+      for j $\gets$ 1 to n
+        $d[k]_{i,j}$ $\gets$ min($d[k-1]_{i,j}$, $d[k-1]{i,k}$ + $d[k-1]{k,j}$)
+  return D[n] 
+\end{lstlisting}
+\subsubsection{Time Complexity}
+This algorithm finds the shortest paths by iteratively constructing a 3d matrix. It must loop over every row of every column of every plane.
+The dimensions are all based on V, so the time complexity is $\Theta(|V|^3)$.
+\subsubsection{Correctness Proof}
+\begin{description}
+\item [Invariant: ] After the $k$th iteration, if the shortest path from a given $u$ to $v$ where $(u,v)\in E$ uses $k$ as an intermediate, $k$ will have been added to the path.
+  from u to v
+\item [Initialization: ] $k$ is 0 initially, a value not on the graph. Therefore no paths from $u$ to $v$ will pass through $k$.
+\item [Maintenence: ] Two cases exist.
+  \begin{enumerate}
+  \item If using $k$ as an intermediate point on the path from $u$ to $v$ shortens the path, it is added to the path from $u$ to $v$.
+  \item If using $k$ as an intermediate point on the path from $u$ to $v$ does not shorten the path, it is not added to the path from $u$ to $v$.
+  \end{enumerate}
+\item [Termination: ] When the loop terminates, $k = n$, so all intermediates will have been considered for all paths between vertices in the graph, and all shortest
+  paths will have been selected.
+\end{description}
+\subsection{Bellman-Ford}
+\subsubsection{Pseudocode}
+\begin{lstlisting}[mathescape=true]
+proc bellman-ford(G, w, s)
+  initialize-single-source(G, s)
+  for i $\gets$ 1 to |G.V| - 1
+    for $\forall(u, v) \in G.E$
+      relax(u, v, w)
+  for $\forall (u, v) \in G.E$
+    if v.d > u.d + w(u, v)
+      error "Graph contains a negative weight cycle"
+\end{lstlisting}
+\subsubsection{Time Complexity}
+The initialization process takes $\Theta(|V|)$ time, followed by $|V| - 1$ iterations over
+every edge $\forall (u, v) \in G.V$. The final loop is another iteration over every edge.
+Thus the correct time complexity is $O(VE)$.
+\subsubsection{Correctness Proof}
+\begin{description}
+\item [Invariant: ] After $k$ iterations, every path from the source to a given vertex $v \in V$ consisting of $k$ vertices is the shortest path connecting the source to $v$, so as long as $G$ contains no negative weight cycles.
+\item [Initialization: ] Initially, $k = 0$ and the path connecting the source to itself is trivially short.
+\item [Maintenence: ] Given that the shortest path containing $k-1$ elements has already been found, the shortest path containing at most $k$ vertices is the shortest path containing $k-1$ vertices plus the closest vertex. 
+\item [Termination: ] When the loop terminates, $k = V$, so the shortest path connecting every vertex through every other vertex to the source has been found. If this is not true, then we can conclude the graph has a negative weight cycle and raise an error.
+\end{description}
+\subsection{Djikstra's}
+\subsubsection{Pseudocode}
+\begin{lstlisting}[mathescape=true]
+proc dijkstra(G, w, s)
+  initialize-single-source(G, s)
+  Q = G.V
+  while Q $\neq \emptyset$
+    u = extract-min(Q)
+    for v $\in$ G.adj[u]
+      relax(u, v, w)
+\end{lstlisting}
+\subsubsection{Time Complexity}
+The initilization again takes $\Theta(|V|)$ time, exploring each vertex takes $V$ time, extracting a minimum takes $lg(V)$ time, and each edge is relaxed exactly once, $O(E)$ time. Therefore the runtime of the algorithm is based on what structure we choose to use for $Q$, which will be explored later.
+\subsubsection{Correctnesss Proof}
+\begin{description}
+\item [Invariant: ] At the start of each loop, the shortest path to every vertex that has been removed from $Q$ has been found.
+\item [Initialization: ] Initially, no elements have been removed from $Q$$, so the invariant is trivially proven.
+\item [Maintenence: ] On each loop iteration, the number of explored elements is incremented, and by selecting the vertex closest to the source not in the explored space, we know that the shortest path to that vertex must be through its parent in the explored space.
+\item [Termination: ] When the loop terminates, every vertex has been removed from $Q$, and by the invariant, the shortest path to every vertex is known.
+\end{description}
+\subsection{Johnson's}
+\subsubsection
+\section{Conclusion}
+\end{document}
