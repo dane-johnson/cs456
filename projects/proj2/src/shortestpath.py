@@ -62,7 +62,7 @@ class MinPriorityHeap:
     if ileft(i) < len(self.heap) and self.heap[ileft(i)].key < self.heap[smallest].key:
       smallest = ileft(i)
     if iright(i) < len(self.heap) and self.heap[iright(i)].key < self.heap[smallest].key:
-      smallest = ileft(i)
+      smallest = iright(i)
     if smallest != i:
       self.heap_swap(i, smallest)
       self.heapify(smallest)
@@ -283,11 +283,10 @@ def dijkstra_min_heap(graph, source):
   """Dijkstra's algorithm using a min heap for PQ"""
   unvisited = MinPriorityHeap()
   distance = OrderedDict()
-  parent = OrderedDict()
+  
   for src in graph:
     unvisited.insert(src, INFINITY)
     distance[src] = INFINITY
-    parent[src] = None
     
   distance[source] = 0
   unvisited.decrease_key(unvisited.get_index(source), 0)
