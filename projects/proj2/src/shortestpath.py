@@ -461,9 +461,3 @@ def parse(alllines):
 if __name__ == "__main__":
   main()
 
-q = FibonacciHeap()
-q.insert('a', 1)
-q.insert('b', 2)
-q.insert('c', 3)
-q.insert('d', 4)
-q.extract_min()
