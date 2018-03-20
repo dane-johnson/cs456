@@ -3,7 +3,7 @@ import shortestpath
 
 densedir = './graphs/sample-graphs/dense-graphs/'
 sparsedir = './graphs/sample-graphs/sparse-graphs/'
-algorithms = [(shortestpath.floyd_warshall, "Floyd-Warshall"), (shortestpath.johnson_min_heap, "Johnson-Min-Heap")]
+algorithms = [(shortestpath.floyd_warshall, "Floyd-Warshall"), (shortestpath.johnson_min_heap, "Johnson-Min-Heap") (shortestpath.johnson_fibonacci_heap, "Johnson-FibonacciHeap")]
 
 def main():
   sparse_files = os.listdir(sparsedir)
