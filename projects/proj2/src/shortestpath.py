@@ -342,6 +342,10 @@ def johnson_min_heap(graph):
   """Runs Johnson's algorithm, using Min Heap implementation of Dijkstra's algorithm"""
   return johnson(graph, dijkstra_min_heap)
 
+def johnson_fibonacci_heap(graph):
+  """Runs Johnson's algorithm, using MinHeap implementation of Dijkstra's algotrihm"""
+  return johnson(graph, dijkstra_fibonacci)
+
 #################### FLOYD-WARSHALL ####################
 
 def floyd_warshall(graph):
@@ -418,6 +422,7 @@ def main():
     graph = parse(alllines)
     fw_out, fw_time = find_average_time(graph, floyd_warshall)
     jmh_out, jmh_time = find_average_time(graph, johnson_min_heap)
+    fh_out, fh_time = find_average_time(graph, johnson_fibonacci_heap)
     with open(os.path.splitext(os.path.basename(sys.argv[1]))[0] + "Out" + os.path.splitext(sys.argv[1])[1], "w") as fout:
       fout.write("Floyd-Warshall time: %f seconds\n" % fw_time)
       fout.write("Johnson Min-Priority-Heap time: %f seconds\n" % jmh_time)
