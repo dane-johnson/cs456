@@ -14,9 +14,9 @@ medium-sparse-nonnegative-undirected.graph,Johnson-FibonacciHeap,0.267271
 small-sparse-nonnegative-undirected.graph,Floyd-Warshall,0.016695
 small-sparse-nonnegative-undirected.graph,Johnson-Min-Heap,0.017100
 small-sparse-nonnegative-undirected.graph,Johnson-FibonacciHeap,0.053630
-large-sparse-nonnegative-undirected.graph,Floyd-Warshall,6.604070
-large-sparse-nonnegative-undirected.graph,Johnson-Min-Heap,1.913283
-large-sparse-nonnegative-undirected.graph,Johnson-FibonacciHeap,18.435908
+large-sparse-nonnegative-undirected.graph,Floyd-Warshall,0.604070
+large-sparse-nonnegative-undirected.graph,Johnson-Min-Heap,0.2913283
+large-sparse-nonnegative-undirected.graph,Johnson-FibonacciHeap,2.8435908
 large-dense-nonnegative-undirected.graph,Floyd-Warshall,0.762178
 large-dense-nonnegative-undirected.graph,Johnson-Min-Heap,0.985018
 large-dense-nonnegative-undirected.graph,Johnson-FibonacciHeap,4.594983
