@@ -3,7 +3,7 @@ import shortestpath
 
 densedir = './graphs/sample-graphs/dense-graphs/'
 sparsedir = './graphs/sample-graphs/sparse-graphs/'
-algorithms = [(shortestpath.floyd_warshall, "Floyd-Warshall"), (shortestpath.johnson_min_heap, "Johnson-Min-Heap") (shortestpath.johnson_fibonacci_heap, "Johnson-FibonacciHeap")]
+algorithms = [(shortestpath.floyd_warshall, "Floyd-Warshall"), (shortestpath.johnson_min_heap, "Johnson-Min-Heap"), (shortestpath.johnson_fibonacci_heap, "Johnson-FibonacciHeap")]
 
 def main():
   sparse_files = os.listdir(sparsedir)
@@ -14,7 +14,7 @@ def main():
       for filename in fileset:
         graph = shortestpath.parse(shortestpath.readfile(dirname + filename))
         for algorithm, algoname in algorithms:
-          _, time = shortestpath.find_average_time(graph, algorithm)
+          _, time = shortestpath.find_average_time(graph, algorithm, 1)
           fout.write("%s,%s,%f\n" % (filename, algoname, time))
 
 if __name__ == "__main__":
