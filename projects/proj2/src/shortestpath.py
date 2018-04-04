@@ -5,7 +5,7 @@ import copy
 import math
 from collections import OrderedDict
 
-INFINITY = sys.maxint
+INFINITY = float('inf')
 JOHNSON_KEY = "JOHNSON_KEY"
 
 def ileft(i):
@@ -29,7 +29,7 @@ def dll_iterator(dll):
 
 def D(n):
   """D(n) = floor(lg(n))"""
-  return math.floor(math.log(n)/math.log(2))
+  return int(math.floor(math.log(n)/math.log(2))) + 1
   
 
 class Node:
@@ -62,7 +62,7 @@ class MinPriorityHeap:
     if ileft(i) < len(self.heap) and self.heap[ileft(i)].key < self.heap[smallest].key:
       smallest = ileft(i)
     if iright(i) < len(self.heap) and self.heap[iright(i)].key < self.heap[smallest].key:
-      smallest = ileft(i)
+      smallest = iright(i)
     if smallest != i:
       self.heap_swap(i, smallest)
       self.heapify(smallest)
@@ -98,6 +98,9 @@ class FibonacciHeap:
     self.n = 0
     self.min = None
 
+  def __len__(self):
+    return self.n
+
   def insert(self, x, key):
     node = Node(x, key)
     node.degree = 0
@@ -111,7 +114,7 @@ class FibonacciHeap:
     else:
       node.right = self.min.right
       self.min.right.left = node
-      node.left = self.min.right
+      node.left = self.min
       self.min.right = node
       if node.key < self.min.key:
         self.min = node
@@ -191,6 +194,8 @@ class FibonacciHeap:
       y.right = y
       y.left = y
       x.child = y
+    x.degree += 1
+    y.parent = x
     y.mark = False
 
   def decrease_key(self, x, k):
@@ -218,37 +223,32 @@ class FibonacciHeap:
     ## Add x to the min root list
     x.right = self.min.right
     self.min.right.left = x
-    x.left = self.min.right
+    x.left = self.min
     self.min.right = x
-
+    if x.key < self.min.key:
+      self.min = x
+      
     x.parent = None
     x.mark = False
 
-  def cascading_cut(y):
+  def cascading_cut(self, y):
     z = y.parent
     if z:
       if not y.mark:
         y.mark = True
       else:
-        cut(y, z)
-        cascading_cut(z) 
+        self.cut(y, z)
+        self.cascading_cut(z)
 
-def fib_heap_union(heap1, heap2):
-  new_heap = FibonacciHeap()
-  if heap1.min == None:
-    new_heap.min = heap2.min
-  elif heap2.min == None:
-    new_heap.min = heap1.min
-  else:
-    heap1.min.right.left = heap2.min.left
-    heap2.min.left.right = heap1.min.right
-    heap1.min.right = heap2.min
-    heap2.min.left = heap1.min
-    if heap1.min.key < heap2.min.key:
-      new_heap.min = heap1.min
-    else:
-      new_heap.min = heap2.min
-  new_heap.n = heap1.n + heap2.n
+  def get_index(self, val):
+    queue = [self.min]
+    while len(queue) > 0:
+      curr = queue.pop()
+      for node in dll_iterator(curr):
+        if node.val == val:
+          return node
+        if node.child:
+          queue.insert(0, node.child)
 
 #################### BELLMAN-FORD ####################
 
@@ -279,15 +279,13 @@ def bellman_ford(graph, source):
 
 #################### DIJKSTRA ####################
 
-def dijkstra_min_heap(graph, source):
-  """Dijkstra's algorithm using a min heap for PQ"""
-  unvisited = MinPriorityHeap()
+def dijkstra(graph, source, unvisited):
+  """Dijkstra's algorithm using a passed in data structure for unvisited"""
   distance = OrderedDict()
-  parent = OrderedDict()
+  
   for src in graph:
     unvisited.insert(src, INFINITY)
     distance[src] = INFINITY
-    parent[src] = None
     
   distance[source] = 0
   unvisited.decrease_key(unvisited.get_index(source), 0)
@@ -300,28 +298,41 @@ def dijkstra_min_heap(graph, source):
         unvisited.decrease_key(unvisited.get_index(dest), distance[dest])
 
   return distance.values()
-  
+
+def dijkstra_min_heap(graph, source):
+  """Dijkstra's algorith implemented with a Min Priority Heap"""
+  unvisited = MinPriorityHeap()
+  return dijkstra(graph, source, unvisited)
+
+def dijkstra_fibonacci(graph, source):
+  """Dijkstra's algorithm implemented with a Fibonacci Heap"""
+  unvisited = FibonacciHeap()
+  return dijkstra(graph, source, unvisited)
 
 #################### JOHNSON ####################
 
 def johnson(graph, dijkstra):
   """Runs Johnson's algorithm on a graph. Must be given an implementation of Dijkstra's algorithm"""
+  my_graph = copy.deepcopy(graph)
   new_node = {}
-  for node in graph:
+  for node in my_graph:
     new_node[node] = 0
-  graph[JOHNSON_KEY] = new_node
+  my_graph[JOHNSON_KEY] = new_node
 
   ## This will throw an exception if there are negative weight cycles
-  distance, predecessor = bellman_ford(graph, JOHNSON_KEY)
-  for src in graph:
-    for dest in graph:
-      if dest in graph[src]:
-        graph[src][dest] += (distance[src] - distance[dest])
-  del graph[JOHNSON_KEY]
+  distance, predecessor = bellman_ford(my_graph, JOHNSON_KEY)
+  for src in my_graph:
+    for dest in my_graph:
+      if dest in my_graph[src]:
+        my_graph[src][dest] += (distance[src] - distance[dest])
+  del my_graph[JOHNSON_KEY]
 
   adj_matrix = []
-  for src in graph:
-    adj_matrix.append(dijkstra(graph, src))
+  for src in my_graph:
+    prime = dijkstra(my_graph, src)
+    for j, dest in enumerate(my_graph):
+      prime[j] += (distance[dest] - distance[src])
+    adj_matrix.append(prime)
     
     ## Make infinities -1 to match sample output      
   retval = copy.deepcopy(adj_matrix)
@@ -334,6 +345,10 @@ def johnson(graph, dijkstra):
 def johnson_min_heap(graph):
   """Runs Johnson's algorithm, using Min Heap implementation of Dijkstra's algorithm"""
   return johnson(graph, dijkstra_min_heap)
+
+def johnson_fibonacci_heap(graph):
+  """Runs Johnson's algorithm, using MinHeap implementation of Dijkstra's algotrihm"""
+  return johnson(graph, dijkstra_fibonacci)
 
 #################### FLOYD-WARSHALL ####################
 
@@ -411,13 +426,17 @@ def main():
     graph = parse(alllines)
     fw_out, fw_time = find_average_time(graph, floyd_warshall)
     jmh_out, jmh_time = find_average_time(graph, johnson_min_heap)
+    fh_out, fh_time = find_average_time(graph, johnson_fibonacci_heap)
     with open(os.path.splitext(os.path.basename(sys.argv[1]))[0] + "Out" + os.path.splitext(sys.argv[1])[1], "w") as fout:
       fout.write("Floyd-Warshall time: %f seconds\n" % fw_time)
       fout.write("Johnson Min-Priority-Heap time: %f seconds\n" % jmh_time)
+      fout.write("Johnson Fibonacci-Heap time: %f seconds\n" % fh_time)
       fout.write("--------------------FLOYD-WARSHALL--------------------\n")
       write_adj_list(fout, fw_out)
       fout.write("--------------------JOHNSON-MIN-PRIORITY-HEAP--------------------\n")
       write_adj_list(fout, jmh_out)
+      fout.write("--------------------JOHNSON-FIBONACCI-HEAP--------------------\n")
+      write_adj_list(fout, fh_out)
 
 def usage():
   print "Usage: %s filename" % sys.argv[0]
@@ -441,3 +460,4 @@ def parse(alllines):
 
 if __name__ == "__main__":
   main()
+
