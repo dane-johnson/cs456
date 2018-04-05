@@ -1,4 +1,5 @@
 from math import sqrt
+from copy import deepcopy
 
 from shortestpath import MinPriorityHeap
 
@@ -44,25 +45,54 @@ def brute_force_ts(points):
   best = min(configurations, key=score)
   return best, proper_score(best)
 
+def lower_bound(placed, remaining):
+  """Calculates the lower bound of the current state by
+  multiplying the cheapest edge by the number of
+  edges needed to complete the circuit"""
+  shortest = dist_sqrd(remaining[0], remaining[1])
+  for i, u in enumerate(remaining):
+    for v in remaining[:i] + remaining[i+1:]:
+      if dist_sqrd(u, v) < shortest:
+        shortest = dist_sqrd(u, v)
+        
+  distance = 0
+  for u in placed[:-1]:
+    print u
+    for v in placed[1:]:
+      distance += dist_sqrd(u, v)
+      
+  return distance + shortest * (len(remaining) + 1)
+
+def calc_next_states(state):
+  next_states = []
+  for i, p in enumerate(state['remaining']):
+    s = {
+      'placed': state['placed'] + [p],
+      'remaining': state['remaining'][:i] + state['remaining'][i+1:],
+      'lower_bound': lower_bound(state['placed'] + [p], state['remaining'][:i] + state['remaining'][i+1:])
+    }
+    next_states.append(s)
+  return next_states
+
 def bnb_ts(points):
   """More enlightened approach, only search promising trees"""
   ## Doesn't matter where we start, pick any point
   state = {
-    "placed": points[:1]
-    "remaining": points[1:]
+    "placed": points[:1],
+    "remaining": points[1:],
     "lower_bound": lower_bound(points[:1], points[1:])
   }
   solution = None
   queue = MinPriorityHeap()
   queue.insert(state, state['lower_bound'])
   while len(queue) != 0:
-    curr = queue.extract_min
+    curr = queue.extract_min()
     if len(curr['remaining']) == 1:
       ## We have found a solution
       candidates = calc_next_states(curr)
       if solution:
         candidates.append(solution)
-      solution = min(candidates, lamda x: x['lower_bound'])
+      solution = min(candidates, lambda x: x['lower_bound'])
       queue.prune(x['lower_bound'])
     else:
       ## Calculate the next states and add them to the queue
