@@ -75,7 +75,7 @@ def calc_next_states(state):
     next_states.append(s)
   return next_states
 
-def bnb_ts(points):
+def branch_and_bound_ts(points):
   """More enlightened approach, only search promising trees"""
   ## Doesn't matter where we start, pick any point
   state = {
@@ -101,6 +101,34 @@ def bnb_ts(points):
       for state in next_states:
         queue.insert(state, state['lower_bound'])
   return solution['placed'], proper_score(solution['placed'])
+
+def dynamic_programming_ts(points):
+  """Solves TSP with dynamic programming. Takes a lot of space"""
+  ## Pick a source. It doesn't matter which
+  source = points[0]
+  rest = points[1:]
+  cost = [{}]
+  for p in rest:
+    ## Initialize all 2 sets to be the distance to the source
+    cost[0][frozenset([source, p])] = dist_sqrd(source, p)
+    
+  for i in xrange(len(points) - 3): ## Do this for all but the first and last 2 connections
+    cost.append({})
+    for v in rest:
+      for s in cost[i].keys(): ## For each i - 1 set
+        min_cost = float('inf')
+        if v in s:
+          continue ## Skip if this point is already in the set
+        for u in s:
+          ## Find the shortest connection to add v into the set, not from the source
+          print "considering", u, v, s
+          if u != source and cost[i][s] + dist_sqrd(u, v) < min_cost:
+            min_cost = cost[i][s] + dist_sqrd(u, v)
+            print "new min_cost = ", min_cost
+        if (not s | frozenset([v]) in cost[i + 1]) or min_cost < cost[i + 1][s | frozenset([v])]:
+          cost[i + 1][s | frozenset([v])] = min_cost
+          print "cost[%d][%s] = %f" % (i + 1, s | frozenset([v]), min_cost)
+  return cost
 
 def read_file(filename):
   """Reads in an input file into a list of points"""
