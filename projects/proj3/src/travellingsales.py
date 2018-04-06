@@ -49,6 +49,8 @@ def lower_bound(placed, remaining):
   """Calculates the lower bound of the current state by
   multiplying the cheapest edge by the number of
   edges needed to complete the circuit"""
+  if len(remaining) <= 1:
+    return score(placed + remaining)
   shortest = dist_sqrd(remaining[0], remaining[1])
   for i, u in enumerate(remaining):
     for v in remaining[:i] + remaining[i+1:]:
@@ -57,7 +59,6 @@ def lower_bound(placed, remaining):
         
   distance = 0
   for u in placed[:-1]:
-    print u
     for v in placed[1:]:
       distance += dist_sqrd(u, v)
       
@@ -92,14 +93,14 @@ def bnb_ts(points):
       candidates = calc_next_states(curr)
       if solution:
         candidates.append(solution)
-      solution = min(candidates, lambda x: x['lower_bound'])
-      queue.prune(x['lower_bound'])
+      solution = min(candidates, key=lambda x: x['lower_bound'])
+      queue.prune(solution['lower_bound'])
     else:
       ## Calculate the next states and add them to the queue
       next_states = calc_next_states(curr)
       for state in next_states:
         queue.insert(state, state['lower_bound'])
-  return solution
+  return solution['placed'], proper_score(solution['placed'])
 
 def read_file(filename):
   """Reads in an input file into a list of points"""
