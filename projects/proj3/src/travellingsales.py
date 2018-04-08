@@ -143,7 +143,7 @@ def dynamic_programming_ts(points):
         ## Find the shortest connection to add v to the set, not from the source,
         ## and connect v back to the source
         if u != source and cost[-1][s] + dist_sqrd(u, v) + dist_sqrd(v, source) < min_cost:
-          min_cost = cost[-1][s] + dist_sqrd(u, v) + dist_sqrd(v, source) < min_cost
+          min_cost = cost[-1][s] + dist_sqrd(u, v) + dist_sqrd(v, source)
           best_path = path[-1][s] + [v]
   return best_path, proper_score(best_path)
 
