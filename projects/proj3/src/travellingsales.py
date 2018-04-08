@@ -153,6 +153,8 @@ def read_file(filename):
     alllines = fin.read()
     points = []
     for line in alllines.split('\n'):
+      if line == '':
+        break
       x, y = map(int, line.split(' '))
       points.append((x, y))
   return points
