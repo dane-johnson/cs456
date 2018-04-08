@@ -108,27 +108,44 @@ def dynamic_programming_ts(points):
   source = points[0]
   rest = points[1:]
   cost = [{}]
+  path = [{}]
   for p in rest:
     ## Initialize all 2 sets to be the distance to the source
     cost[0][frozenset([source, p])] = dist_sqrd(source, p)
-    
+    path[0][frozenset([source, p])] = [source, p]
+
   for i in xrange(len(points) - 3): ## Do this for all but the first and last 2 connections
     cost.append({})
+    path.append({})
     for v in rest:
       for s in cost[i].keys(): ## For each i - 1 set
         min_cost = float('inf')
+        best_path = []
         if v in s:
           continue ## Skip if this point is already in the set
         for u in s:
           ## Find the shortest connection to add v into the set, not from the source
-          print "considering", u, v, s
           if u != source and cost[i][s] + dist_sqrd(u, v) < min_cost:
             min_cost = cost[i][s] + dist_sqrd(u, v)
-            print "new min_cost = ", min_cost
+            best_path = path[i][s] + [v]
         if (not s | frozenset([v]) in cost[i + 1]) or min_cost < cost[i + 1][s | frozenset([v])]:
           cost[i + 1][s | frozenset([v])] = min_cost
-          print "cost[%d][%s] = %f" % (i + 1, s | frozenset([v]), min_cost)
-  return cost
+          path[i + 1][s | frozenset([v])] = best_path
+
+  ## For the last connection, also consider return cost
+  min_cost = float('inf')
+  best_path = []
+  for v in rest:
+    for s in cost[-1].keys():
+      if v in s:
+        continue ## Only select connections with v absent
+      for u in s:
+        ## Find the shortest connection to add v to the set, not from the source,
+        ## and connect v back to the source
+        if u != source and cost[-1][s] + dist_sqrd(u, v) + dist_sqrd(v, source) < min_cost:
+          min_cost = cost[-1][s] + dist_sqrd(u, v) + dist_sqrd(v, source) < min_cost
+          best_path = path[-1][s] + [v]
+  return best_path, proper_score(best_path)
 
 def read_file(filename):
   """Reads in an input file into a list of points"""
