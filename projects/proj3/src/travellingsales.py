@@ -46,23 +46,35 @@ def brute_force_ts(points):
   return best, proper_score(best)
 
 def lower_bound(placed, remaining):
-  """Calculates the lower bound of the current state by
-  multiplying the cheapest edge by the number of
-  edges needed to complete the circuit"""
-  if len(remaining) <= 1:
-    return score(placed + remaining)
-  shortest = dist_sqrd(remaining[0], remaining[1])
-  for i, u in enumerate(remaining):
-    for v in remaining[:i] + remaining[i+1:]:
-      if dist_sqrd(u, v) < shortest:
-        shortest = dist_sqrd(u, v)
-        
-  distance = 0
-  for u in placed[:-1]:
-    for v in placed[1:]:
-      distance += dist_sqrd(u, v)
-      
-  return distance + shortest * (len(remaining) + 1)
+  """Calculates the lower bound of the current state by taking established path, and
+  guessing the shortest path on remaining edges"""
+  ## Calculate the cost of the connections in the placed vertices
+  ## (x2 because it will be averaged later)
+  cost = 0
+  for u, v in zip(placed[:-1], placed[1:]):
+    cost += dist_sqrd(u, v) * 2
+
+  ## Add in the best case for all remaining edges
+  for u in remaining:
+    smallest = float('inf')
+    next_smallest = float('inf')
+    for v in remaining:
+      if u == v:
+        ## Don't connect to self
+        continue
+      val = dist_sqrd(u, v)
+      if val < smallest:
+        next_smallest = smallest
+        smallest = val
+      elif cost < next_smallest:
+        next_smallest = val
+    cost += smallest + next_smallest
+  ## Add in the cost of returning to the source
+  if len(remaining) == 0:
+    cost += dist_sqrd(placed[0], placed[-1]) * 2
+  else:
+    cost += min(map(lambda x: dist_sqrd(placed[0], x), remaining))
+  return cost / 2
 
 def calc_next_states(state):
   next_states = []
@@ -146,6 +158,7 @@ def dynamic_programming_ts(points):
   return best_path, proper_score(best_path)
 
 def mst_approx_ts(points):
+  """Quickly approximates a TSP, sacrificing precision for time."""
   dist = {}
   for p in points:
     dist[p] = float('inf')
@@ -157,6 +170,7 @@ def mst_approx_ts(points):
   path = []
   while len(queue) > 0:
     u = queue.extract_min()
+    path.append(u)
     for v in points:
       if v in set(path):
         ## Ignore this edge, out of the list
@@ -164,9 +178,8 @@ def mst_approx_ts(points):
       cost = dist_sqrd(u, v)
       if cost < dist[v]:
         dist[v] = cost
-        print v, map(lambda x: x.val, queue.heap)
         queue.decrease_key(queue.get_index(v), cost)
-
+        
   return path, proper_score(path)
 
 def read_file(filename):
