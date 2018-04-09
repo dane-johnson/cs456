@@ -145,25 +145,29 @@ def dynamic_programming_ts(points):
       best_path = path[key]
   return best_path, proper_score(best_path)
 
-def prims(points):
-  dist = [float('inf')] * len(points)
-  dist[0] = 0
+def mst_approx_ts(points):
+  dist = {}
+  for p in points:
+    dist[p] = float('inf')
+  dist[points[0]] = 0
   queue = MinPriorityHeap()
-  for i, p in enumerate(points):
-    queue.insert(p, dist[i])
+  for p in points:
+    queue.insert(p, dist[p])
 
   path = []
   while len(queue) > 0:
-    u = queue.pop()
+    u = queue.extract_min()
     for v in points:
       if v in set(path):
         ## Ignore this edge, out of the list
         continue
-      if dist_sqrd(u, v) < dist(v)
-  
+      cost = dist_sqrd(u, v)
+      if cost < dist[v]:
+        dist[v] = cost
+        print v, map(lambda x: x.val, queue.heap)
+        queue.decrease_key(queue.get_index(v), cost)
 
-def mst_approximate_ts(points):
-  
+  return path, proper_score(path)
 
 def read_file(filename):
   """Reads in an input file into a list of points"""
