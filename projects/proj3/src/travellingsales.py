@@ -119,7 +119,6 @@ def dynamic_programming_ts(points):
   for size in xrange(3, len(points) + 1):
     ## Loop through n - 2 more times to create all subsets of n size
     subsets = filter(lambda x: len(x) == size - 1, map(lambda x: x[0], cost.keys()))
-    print subsets
     for S in subsets:
       for i in rest:
         if i in S:
@@ -137,7 +136,14 @@ def dynamic_programming_ts(points):
         cost[key] = min_cost
         path[key] = best_path
 
-  for S, i in filter(lamdba x)
+  min_cost = float('inf')
+  for S, i in filter(lambda x: len(x[0]) == len(points), cost.keys()):
+    ## Look through all the n length sets, find the shortest path to close the loop
+    key = (S, i)
+    if cost[key] + dist_sqrd(source, i) < min_cost:
+      min_cost = cost[key] + dist_sqrd(source, i)
+      best_path = path[key]
+  return best_path, proper_score(best_path)
 
 def read_file(filename):
   """Reads in an input file into a list of points"""
