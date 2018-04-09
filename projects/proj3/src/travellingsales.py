@@ -1,3 +1,4 @@
+import sys
 from math import sqrt
 from copy import deepcopy
 
@@ -193,3 +194,22 @@ def read_file(filename):
       x, y = map(int, line.split(' '))
       points.append((x, y))
   return points
+
+def print_solution(path, score):
+  printed_path = ""
+  for p in path:
+    printed_path += "%s -> " % (p,)
+  printed_path += "%s" % (path[0],)
+  print "Path: %s" % printed_path
+  print "Cost: %f" % score
+
+def usage():
+  print "Usage: %s inputfile" % sys.argv[0]
+  exit(1)
+
+def main(algo):
+  if len(sys.argv) != 2:
+    usage()
+  points = read_file(sys.argv[1])
+  solution = algo(points)
+  print_solution(*solution)
