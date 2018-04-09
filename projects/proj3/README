@@ -1,0 +1,11 @@
+To run an algorithm, invoke python with the program name and an input file as the first argument.
+Example:
+`python brute_force.py graph.txt`
+
+Available programs are
+- `branch_and_bound.py`
+- `brute_force.py`
+- `dynamic_programming`
+- `mst_approximation.py`
+
+Programs are housed in the src directory.
