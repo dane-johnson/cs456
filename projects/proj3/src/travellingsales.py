@@ -107,47 +107,37 @@ def dynamic_programming_ts(points):
   ## Pick a source. It doesn't matter which
   source = points[0]
   rest = points[1:]
-  cost = [{}]
-  path = [{}]
-  for p in rest:
-    ## Initialize all 2 sets to be the distance to the source
-    cost[0][frozenset([source, p])] = dist_sqrd(source, p)
-    path[0][frozenset([source, p])] = [source, p]
+  cost = {}
+  path = {}
 
-  for i in xrange(len(points) - 3): ## Do this for all but the first and last 2 connections
-    cost.append({})
-    path.append({})
-    for v in rest:
-      for s in cost[i].keys(): ## For each i - 1 set
+  for i in rest:
+    ## Create all length 2 subsets
+    key = (frozenset([source, i]), i)
+    cost[key] = dist_sqrd(source, i)
+    path[key] = [source, i]
+
+  for size in xrange(3, len(points) + 1):
+    ## Loop through n - 2 more times to create all subsets of n size
+    subsets = filter(lambda x: len(x) == size - 1, map(lambda x: x[0], cost.keys()))
+    print subsets
+    for S in subsets:
+      for i in rest:
+        if i in S:
+          ## This doesn't generate a new subset
+          continue
         min_cost = float('inf')
-        best_path = []
-        if v in s:
-          continue ## Skip if this point is already in the set
-        for u in s:
-          ## Find the shortest connection to add v into the set, not from the source
-          if u != source and cost[i][s] + dist_sqrd(u, v) < min_cost:
-            min_cost = cost[i][s] + dist_sqrd(u, v)
-            best_path = path[i][s] + [v]
-        if (not s | frozenset([v]) in cost[i + 1]) or min_cost < cost[i + 1][s | frozenset([v])]:
-          cost[i + 1][s | frozenset([v])] = min_cost
-          path[i + 1][s | frozenset([v])] = best_path
+        for j in rest:
+          if not j in S or j == i or j == source:
+            ## These cases are not allowed
+            continue
+          if cost[(S, j)] + dist_sqrd(i, j) < min_cost:
+            min_cost = cost[(S, j)] + dist_sqrd(i, j)
+            best_path = path[(S, j)] + [i]
+        key = (S | frozenset([i]), i)
+        cost[key] = min_cost
+        path[key] = best_path
 
-  ## For the last connection, also consider return cost
-  min_cost = float('inf')
-  best_path = []
-  for v in rest:
-    for s in cost[-1].keys():
-      if v in s:
-        continue ## Only select connections with v absent
-      for u in s:
-        ## Find the shortest connection to add v to the set, not from the source,
-        ## and connect v back to the source
-        if u != source and cost[-1][s] + dist_sqrd(u, v) + dist_sqrd(v, source) < min_cost:
-          min_cost = cost[-1][s] + dist_sqrd(u, v) + dist_sqrd(v, source)
-          best_path = path[-1][s] + [v]
-
-  print cost
-  return best_path, proper_score(best_path)
+  for S, i in filter(lamdba x)
 
 def read_file(filename):
   """Reads in an input file into a list of points"""
