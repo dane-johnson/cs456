@@ -59,7 +59,7 @@ def lower_bound(placed, remaining):
   for u in remaining:
     smallest = float('inf')
     next_smallest = float('inf')
-    for v in remaining:
+    for v in remaining + placed:
       if u == v:
         ## Don't connect to self
         continue
@@ -88,32 +88,35 @@ def calc_next_states(state):
     next_states.append(s)
   return next_states
 
+def expand_path(placed, remaining, cheapest):
+  children = []
+  print placed, remaining, lower_bound(placed, remaining)
+  for i, p in enumerate(remaining):
+    print placed + [p], remaining[:i] + remaining[i+1:], lower_bound(placed + [p], remaining[:i] + remaining[i+1:])
+    child = {
+      'placed': placed + [p],
+      'remaining': remaining[:i] + remaining[i+1:],
+      'lower_bound': lower_bound(placed + [p], remaining[:i] + remaining[i+1:])
+    }
+    children.append(child)
+  children.sort(key=lambda x: x['lower_bound'])
+  best = None
+  for child in children:
+    print cheapest, child['lower_bound']
+    if child['lower_bound'] < cheapest:
+      path, cost = expand_path(child['placed'], child['remaining'], cheapest)
+      if cost < cheapest:
+        cheapest = cost
+        best = path
+  return best, cheapest
+
 def branch_and_bound_ts(points):
   """More enlightened approach, only search promising trees"""
   ## Doesn't matter where we start, pick any point
-  state = {
-    "placed": points[:1],
-    "remaining": points[1:],
-    "lower_bound": lower_bound(points[:1], points[1:])
-  }
-  solution = None
-  queue = MinPriorityHeap()
-  queue.insert(state, state['lower_bound'])
-  while len(queue) != 0:
-    curr = queue.extract_min()
-    if len(curr['remaining']) == 1:
-      ## We have found a solution
-      candidates = calc_next_states(curr)
-      if solution:
-        candidates.append(solution)
-      solution = min(candidates, key=lambda x: x['lower_bound'])
-      queue.prune(solution['lower_bound'])
-    else:
-      ## Calculate the next states and add them to the queue
-      next_states = calc_next_states(curr)
-      for state in next_states:
-        queue.insert(state, state['lower_bound'])
-  return solution['placed'], proper_score(solution['placed'])
+  placed = points[:1]
+  remaining = points[1:]
+  path, _ = expand_path(placed, remaining, float('inf'))
+  return path, proper_score(path)
 
 def dynamic_programming_ts(points):
   """Solves TSP with dynamic programming. Takes a lot of space"""
