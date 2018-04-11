@@ -59,7 +59,7 @@ def lower_bound(placed, remaining):
   for u in remaining:
     smallest = float('inf')
     next_smallest = float('inf')
-    for v in remaining:
+    for v in remaining + placed:
       if u == v:
         ## Don't connect to self
         continue
