@@ -69,6 +69,6 @@ class MinPriorityHeap:
     self.decrease_key(len(self.heap) - 1, key)
 
   def prune(self, key):
-    self.heap = filter(lambda x: x <= key, self.heap)
+    self.heap = filter(lambda x: x.key < key, self.heap)
     for i in xrange(len(self.heap) / 2 - 1, -1, -1):
       self.heapify(i)
