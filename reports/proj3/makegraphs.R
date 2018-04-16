@@ -8,4 +8,3 @@ for (set in c("BruteForce", "BranchAndBound", "DynamicProgramming", "MSTApproxim
     abline(lm(algodata$TIME ~ algodata$N + 0))
     dev.off()
 }
-
