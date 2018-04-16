@@ -3,7 +3,7 @@ import random
 import time
 from travellingsales import brute_force_ts, branch_and_bound_ts, dynamic_programming_ts, mst_approx_ts
 
-N_MAX = 10
+N_MAX = 11
 
 tests = {
   "BruteForce": (brute_force_ts, []),
@@ -22,7 +22,7 @@ for i in xrange(2, N_MAX + 1):
     function, times = tests[test]
     t1 = time.time()
     function(graph)
-    t2 = time.time
+    t2 = time.time()
     times.append(t2 - t1)
 
 with open('runs.csv', 'w') as fout:

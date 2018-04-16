@@ -5,6 +5,5 @@ for (set in c("BruteForce", "BranchAndBound", "DynamicProgramming", "MSTApproxim
     algodata = data[data$ALGO == set,]
     pdf(paste(set, ".pdf", sep=""))
     plot(algodata$N, algodata$TIME, xlab="Time (seconds)", ylab="Number of Nodes")
-    abline(lm(algodata$TIME ~ algodata$N + 0))
     dev.off()
 }
