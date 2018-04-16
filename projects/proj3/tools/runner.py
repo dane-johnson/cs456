@@ -2,7 +2,7 @@
 import random
 from travellingsales import brute_force_ts, branch_and_bound_ts, dynamic_programming_ts, mst_approx_ts
 
-N_MAX = 15
+N_MAX = 10
 
 tests = {
   "BruteForce": (brute_force_ts, []),
