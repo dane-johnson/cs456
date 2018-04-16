@@ -60,43 +60,55 @@ This algorithm finds the shortest Hamiltonian Cycle by looking through every pos
 \end{figure}
 \subsubsection{Observations}
 The data collected is an average of 10 trials. Here we can see the data clearly follow a logarithmic function. An interesting observation can be made here, that the sparse and dense graphs have the same runtimes. This is because of the $\Theta(|V|^2)$ time complexity, graphs with the same number of vertices run in the same time.
-\subsection{Djikstra's}
+\subsection{Branch and Bound}
 \subsubsection{Pseudocode}
 \begin{lstlisting}[mathescape=true]
-proc dijkstra(G, w, s)
-  initialize-single-source(G, s)
-  Q $\gets$ G.V
+proc branch-and-bound(G, s)
+  state.placed $\gets$ {s}
+  state.remaining $\gets$ G.V - {s}
+  state.lower_bound $\gets$ lower_bound(state.placed, state.remaining)
+  Q $\gets {state}
   while Q $\neq \emptyset$
-    u $\gets$ extract-min(Q)
-    for v $\in$ G.adj[u]
-      relax(u, v, w)
+    curr $\gets$ Q.extract_min()
+    if curr is a solution
+      if curr < solution
+        solution $\gets$ curr
+        prune Q for lower bounds < curr
+    else
+      Q $\gets$ Q + {next_states(curr)}
+  return solution
+proc next_states(state)
+  next_states $\gets \emptyset$
+  for $\forall u \in state.remaining$
+    next_state.placed $\gets$ state.placed + {u}
+    next_state.remaining $\gets$ state.remaining - {u}
+    next_state.lower_bound $\gets$ lower_bound(next_state.placed, next_state.remaining)
+    next_states = next_states + {next_state}
+  return n
+proc lower_bound(placed, remaining)
+  add cost of all placed connections and cheapest edges from unplaced
 \end{lstlisting}
 \subsubsection{Time Complexity}
-The initilization again takes $\Theta(|V|)$ time, exploring each vertex takes $V$ time, extracting a minimum takes $lg(V)$ time, and each edge is relaxed exactly once, $O(E)$ time. Therefore the runtime of the algorithm is based on what structure we choose to use for $Q$, which will be explored later, will cause the runtime to be either $O(Elg(V))$ if a Min Priority Heap is used, or $O(Vlg(V))$ if a Fibonacci Heap is used.
+If the prune step is removed, this algorithm will generate the entire search tree, which will cause the algorithm to become a scan of the entire solution space. Given that, in the worst case, no pruning occurs, worrst case time complexity for the algorithm is still $O(n!)$.
 \subsubsection{Correctnesss Proof}
 \begin{description}
-\item [Invariant: ] At the start of each loop, the shortest path to every vertex that has been removed from $Q$ has been found.
-\item [Initialization: ] Initially, no elements have been removed from $Q$, so the invariant is trivially proven.
-\item [Maintenence: ] On each loop iteration, the number of explored elements is incremented, and by selecting the vertex closest to the source not in the explored space, we know that the shortest path to that vertex must be through its parent in the explored space.
-\item [Termination: ] When the loop terminates, every vertex has been removed from $Q$, and by the invariant, the shortest path to every vertex is known.
+\item [Invariant: ] At the end of the $k$th loop, $k$ nodes of the search tree have been explored.
+\item [Initialization: ] Initially, $k = 0$, and only the source node is on the tree 
+\item [Maintenence: ] Each step, all children of the most promising node are added to the tree to be explored, and the $k$th most promising node has been explored
+\item [Termination: ] After $n!$ iterations, $n!$ options have been explored and the search tree has been completely explored.
 \end{description}
-\subsection{Johnson's}
+\subsection{Dynamic Programming}
 \subsubsection{Pseudocode}
 \begin{lstlisting}[mathescape=true]
-proc johnsons(G, w)
-  connect new node s with a weightless edge to every vertex $\forall v \in V$
-  bellman-ford(G, w, s) // This will raise an error if there are negative weight cycles
-  for $\forall v \in G.V$
-    h(v) $\gets$ $\delta(s, v)$
-  remove s from G
-  for $\forall (u, v) \in G.E$
-   $w'$(u, v) $\gets$ w(u, v) + h(u) - h(v)
-  D $\gets$ V $\times$ V matrix
-  for $\forall u \in G.V$
-    run dijikstra(G, $w'$, u) to compute $\delta'(u, v) \forall v \in G.V$
-    for $\forall v \in G.V$
-      $d_{u,v}$ $\gets$ $\delta'(u, v)$ + h(v) - h(u)
-  return D
+proc dynamic_programming(G, s)
+  cost $\gets \emptyset$
+  for i in G.V - {s}
+    cost[{s, i}] = dist(s, i)
+  for n - 2
+    for i in G.V - {s}
+     for $\forall$ n - 1 sized subsets
+       
+      
 \end{lstlisting}
 \subsubsection{Time complexity}
 The time complexity of connecting a new node is $\Theta(|V|)$, Bellman-Ford is $O(VE)$, removing the node is $\Theta(|V|)$, and creating the new weight function is $O(E)$. From here, we are updating every row of the new matrix, which has height $V$, by running Dijkstra's algorithm on each node. The time complexity of Dijkstra is depenedent on the data strucure in use, which will be explored later, if a Min Priority Heap is used, it will be $O(VElg(V))$, and it will be $O(V^2lg(V))$ if a Fibonnacci Heap is used.
