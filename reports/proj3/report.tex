@@ -44,22 +44,20 @@ proc permute(V)
 This algorithm finds the shortest Hamiltonian Cycle by looking through every possible arrangement of nodes and determining which of them has the shortest distance. In order to accomplish this, the {\it permute} procedure creates all possible orderings of the nodes, an operation which takes $O(n!)$ time.
 \subsubsection{Correctness Proof}
 \begin{description}
-\item [Invariant: ] After the $k$th iteration, $k$$ cycles will have been considered for the shortest Hamiltion cycle, and the miniumum will be recorded.
+\item [Invariant: ] After the $k$th iteration, $k$ cycles will have been considered for the shortest Hamiltion cycle, and the miniumum will be recorded.
 \item [Initialization: ] $k$ is 0 initially, no paths have been considered and no shortest has been selected.
-\item [Maintenence: ] After the $k$$ iterations, the $k$th cycle is considered and, if it is the minimum yet considered, it is recorded.
+\item [Maintenence: ] After the $k$ iterations, the $k$th cycle is considered and, if it is the minimum yet considered, it is recorded.
 \item [Termination: ] When the loop terminates, $k = n$, so all possible cycles have been considered and the minumum cycle has been recoreded.
 \end{description}
 \subsubsection{Empirical Validation}
 \begin{figure}[H]
   \centering
-  \textbf{Sparse Graph}\par\medskip
+  \textbf{Brute Force}\par\medskip
+  \includegraphics[width=1\linewidth]{BruteForce.pdf}
 \end{figure}
-\begin{figure}[H]
-  \centering
-  \textbf{Dense Graph}\par\medskip
-\end{figure}
+Y axis in log scale.
 \subsubsection{Observations}
-The data collected is an average of 10 trials. Here we can see the data clearly follow a logarithmic function. An interesting observation can be made here, that the sparse and dense graphs have the same runtimes. This is because of the $\Theta(|V|^2)$ time complexity, graphs with the same number of vertices run in the same time.
+Here we can see the data on a y-log graph. Even on a log graph, which would show polynomial relations as a straight line, we can still see a clear curvature. This would indicate that the time complexity of the algorithm is non-polynomial. Additionally, we can see that the algorithm begins to perform extremely poorly even at 10 nodes, taking a whole 17 seconds. 
 \subsection{Branch and Bound}
 \subsubsection{Pseudocode}
 \begin{lstlisting}[mathescape=true]
@@ -67,7 +65,7 @@ proc branch-and-bound(G, s)
   state.placed $\gets$ {s}
   state.remaining $\gets$ G.V - {s}
   state.lower_bound $\gets$ lower_bound(state.placed, state.remaining)
-  Q $\gets {state}
+  Q $\gets$ {state}
   while Q $\neq \emptyset$
     curr $\gets$ Q.extract_min()
     if curr is a solution
@@ -97,6 +95,14 @@ If the prune step is removed, this algorithm will generate the entire search tre
 \item [Maintenence: ] Each step, all children of the most promising node are added to the tree to be explored, and the $k$th most promising node has been explored
 \item [Termination: ] After $n!$ iterations, $n!$ options have been explored and the search tree has been completely explored.
 \end{description}
+\begin{figure}[H]
+  \centering
+  \textbf{Branch and Bound}\par\medskip
+  \includegraphics[width=1\linewidth]{BranchAndBound.pdf}
+\end{figure}
+Y axis in log scale.
+\subsection{Observations}
+
 \subsection{Dynamic Programming}
 \subsubsection{Pseudocode}
 \begin{lstlisting}[mathescape=true]
