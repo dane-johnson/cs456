@@ -110,19 +110,19 @@ proc dynamic_programming(G, s)
   cost $\gets \emptyset$
   for i in G.V - {s}
     cost({s, i}, i) = dist(s, i)
-  for n - 2
+  for k in n - 2
     for i in G.V - {s}
-      for $\forall$ n - 1 sized subsets S where $i \notin S$
+      for $\forall$ k + 2 sized subsets S where $i \notin S$
         cost(S + {i}, i) = min{cost(S, j) + dist(j, i)} where $j \neq s, j \neq i, j \in S$
   return min{cost(S, i) + dist(i, s)} where $|S| = n$    
 \end{lstlisting}
 \subsubsection{Time complexity}
-In order to generate all subsets of size $n$ ending at all points that are not the source, all $n - 1$ subsets ending at all points that are not the source must be generated. This creates the recurrance relation $T(n) = nT(n - 1) + c$, which expands to $T(n) = n((n - 1)T(n - 2) + d) + c$, which eventually exands to $1 * 2 * 3 * ... * (n - 1) * n + C = n!$, so the time complexity of this algorithm is still $O(n!)$ 
+In order to generate all subsets of size $n$ ending at all points that are not the source, all $n - 1$ subsets ending at all points that are not the source must be generated. This creates the recurrence relation $T(n) = nT(n - 1) + c$, which expands to $T(n) = n((n - 1)T(n - 2) + d) + c$, which eventually expands to $1 * 2 * 3 * ... * (n - 1) * n + C = n!$, so the time complexity of this algorithm is still $O(n!)$ 
 \subsubsection{Correctness Proof}
 \begin{description}
 \item [Invariant: ] After the $k$th iteration of the loop, all $k + 2$ subsets ending in $i$ have been generated.
 \item [Initialization: ] Before the loop all 2 length subsets are generated.
-\item [Maintenence: ] On each loop iteration, each $k + 2$ subset ending in each of $n$ is generated.
+\item [Maintenance: ] On each loop iteration, each $k + 2$ subset ending in each of $n$ is generated.
 \item [Termination: ] When the loop terminates, $k = n - 2$, so all $n$ length subsets ending in $i  \forall  i  \in  n$ have been generated, and the minimum can be selected.
 \end{description}
 \begin{figure}[H]
@@ -132,7 +132,7 @@ In order to generate all subsets of size $n$ ending at all points that are not t
 \end{figure}
 Y axis in log scale.
 \subsection{Observations}
-In the dynamic programming example, we can see a very nearly straight line on the y-log graph, however attempting to draw a straight edge reveals a slight curveture, indicating that the graph is still exponential. This graph does not have the same amount of variation that the branch and bound algorithm would have, as the bound on this algorithm is tighter, the same number of calculations are performed on all graphs of the same size, so the data are more regular.
+In the dynamic programming example, we can see a very nearly straight line on the y-log graph, however attempting to draw a straight edge reveals a slight curvature, indicating that the graph is still exponential. This graph does not have the same amount of variation that the branch and bound algorithm would have, as the bound on this algorithm is tighter, the same number of calculations are performed on all graphs of the same size, so the data are more regular. Finally, it happened several times with this algorithm that I ran out of memory while building the tables. Memory needs expand exponentially as well with this algorithm.
 \section{MST Approximation}
 \subsection{Pseudocode}
 \begin{lstlisting}[mathescape=true]
@@ -154,12 +154,12 @@ proc mst_approximation(G, s)
   return path + {s}
 \end{lstlisting}
 \subsection{Time Complexity}
-Time complexity of the algorithm depends on the data structure used for $Q$, assuming a Min Priority Heap is used, time complexity will be as follows. Initializing the Q will take $\Theta(|V|)$ time, exploring each vertex takes $V$ time, extracting a minimum takes $lg(V)$ time, and each edge is replaxed exactly once, which indicates $O(E)$ time. Thus, the runtime of the algorithm is $O(E \times lg(v))$ time.
-\subsubsection{Correctnesss Proof}
+Time complexity of the algorithm depends on the data structure used for $Q$, assuming a Min Priority Heap is used, time complexity will be as follows. Initializing the Q will take $\Theta(|V|)$ time, exploring each vertex takes $V$ time, extracting a minimum takes $lg(V)$ time, and each edge is replaced exactly once, which indicates $O(E)$ time. Thus, the runtime of the algorithm is $O(E \times lg(v))$ time.
+\subsubsection{Correctness Proof}
 \begin{description}
 \item [Invariant: ] At the start of each loop, the shortest path to every vertex that has been removed from $Q$ has been found and a completion order up to the last vertex has been recorded..
 \item [Initialization: ] Initially, no elements have been removed from $Q$, so the invariant is trivially proven.
-\item [Maintenence: ] On each loop iteration, the number of explored elements is incremented, and by selecting the vertex closest to the source not in the explored space, we know that the shortest path to that vertex must be through its parent in the explored space. Additionally, the path to the vertex has been recorded.
+\item [Maintenance: ] On each loop iteration, the number of explored elements is incremented, and by selecting the vertex closest to the source not in the explored space, we know that the shortest path to that vertex must be through its parent in the explored space. Additionally, the path to the vertex has been recorded.
 \item [Termination: ] When the loop terminates, every vertex has been removed from $Q$, and by the invariant, the shortest path to every vertex is known, and the discovery order has been fully recorded.
 \end{description}
 \subsection{Empirical Validation}
@@ -172,4 +172,68 @@ Y axis in log scale.
 \subsection{Observations}
 The graph, again on a y-log scale, shows curvature, but a key difference here is that the concavity is downwards. This indicates a polynomial time relation, as hypothesized above. There are significant fluctuations in completion time, however in this algorithm that is likely to do with the clustering of data points, more clustered data points result in more comparisons needed to update keys, which results in variation in completion time.
 \section{Conclusion}
+An obvious conclusion that can be drawn from the data is that TSP is not a problem that can be solved in polynomial time. The only algorithm that we looked at that can run in polynomial time, the MST approximation algorithm, is not guaranteed to be correct. That is the trade off with that particular algorithm, correctness is sacrificed to have the algorithm perform in an acceptable amount of time. Another conclusion is that brute force is not a good solution for navigating a search space of even the smallest TSP. Brute force starts out very strong by having little overhead, but it then quickly shoots up above all the other algorithms once $n$ reaches 5 or so nodes. Dynamic programming has a lot to offer in eliminating the unpredictability that is inherent branch and bound or backtracking algorithm, each iteration of the algorithm is a distinct step towards a solution. Additionally, dynamic programming cuts down on the time complexity of brute force or any divide and conquer scheme that could be thought up by its bottom up nature, and its use of tabular data structures to avoid redundant calculations. However, as the graphs show, this security comes at a cost. On large search spaces, this algorithm still demands exponential work, and as a result it is slower than the branch and bound approach. Branch and bound is the big winner here, in terms of speed to reach a verifiable correct conclusion. No approximation is made, and a lot of the work of the dynamic programming algorithm can be avoided all together by the realization that some avenues are not worth exploring if they are not promising enough to yield a correct solution. However, as the graph shows, a branch and bound algorithm is vulnerable to specific edge cases where the search space is larger and the distinctions between branches are small. In this case, the branch and bound algorithm fails to offer the security that is present in the dynamic programming approach. To conclude, it is clear that brute force should never be selected if there is any metric available to judge partial solutions. If there is no requirement to have a verifiable and totally correct solution, an approximation algorithm should be selected. Finally, if time and certifiably are both concerns, a branch and bound algorithm with a good heuristic is the fastest way to reach a conclusion. However, in cases where data is known to be tightly packed or no good heuristic is known to judge a partial solution, dynamic programming is the optimal choice, provided enough memory is available. This memory restriction is likely to be present in all but the best funded ventures, so I would recommend branch and bound outright.
+\section{Extra Credit}
+\subsection{Brute Force}
+\subsubsection{Pseudocode}
+\begin{lstlisting}[mathescape=true]
+proc brute_force(G, s)
+  search_space $\gets$ permute(G.V - {s})
+  spawn m threads
+  each thread looks through $n! / m$ elements and records the minimum
+  join threads
+  select minimum of each threads recorded minimum
+  return minimum
+\end{lstlisting}
+\subsection{Branch and Bound}
+\subsubsection{Pseudocode}
+\begin{lstlisting}[mathescape=true]
+proc brute_force(G, s)
+  Q $\gets$ initialized as above
+  create a lock for writing to Q
+  create a lock for writing to solution
+  spawn m threads
+  while Q $\neq \emptyset$
+    acquire lock for Q
+    curr $\gets$ Q.extract_min()
+    if curr.remaining $\neq \emptyset$
+      generate next states and enqueue them provided they are lower bounded below solution
+      release lock on Q
+    else 
+      release lock on Q
+      if curr < solution
+        acquire lock on solution
+        if curr < solution \\ be sure this is still true
+          solution = curr
+        release lock on solution
+  join threads
+  return solution       
+\end{lstlisting}
+\subsection{Dynamic Programming}
+\subsubsection{Pseudocode}
+\begin{lstlisting}[mathescape=true]
+proc dynamic_programming(G, s)
+  initialize length 2 subsets as above
+  for k in n - 2
+    spawn n - 1 threads
+    each thread calculates k + 2 sized subsets as above, each thread calculating all sets ending in $i \forall i \in G.V - {s}$
+    join threads
+  return min{cost(S, i) + dist(i, s)} where $|S| = n$
+\end{lstlisting}
+\subsection{MST Approximation}
+\subsubsection{Pseudocode}
+\begin{lstlisting}[mathescape=true]
+proc mst_approximation(G, s)
+  Q $\gets$ initialize_single_source(G, s)
+  path $\gets \emptyset$
+  while Q $\neq \emptyset$
+    u $\gets$ Q.extract_min()
+    path $\gets$ path + {u}
+    spawn thread for $\forall (u, v) \in G.E$
+    if d[v] < dist(u, v)
+      d[v] = dist(u, v)
+      q.decrease_key(v)
+    join threads
+  return path + {s}
+\end{lstlisting}
 \end{document}
