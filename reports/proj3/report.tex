@@ -44,10 +44,10 @@ proc permute(V)
 This algorithm finds the shortest Hamiltonian Cycle by looking through every possible arrangement of nodes and determining which of them has the shortest distance. In order to accomplish this, the {\it permute} procedure creates all possible orderings of the nodes, an operation which takes $O(n!)$ time.
 \subsubsection{Correctness Proof}
 \begin{description}
-\item [Invariant: ] After the $k$th iteration, $k$ cycles will have been considered for the shortest Hamiltion cycle, and the miniumum will be recorded.
+\item [Invariant: ] After the $k$th iteration, $k$ cycles will have been considered for the shortest Hamiltonian cycle, and the minimum will be recorded.
 \item [Initialization: ] $k$ is 0 initially, no paths have been considered and no shortest has been selected.
-\item [Maintenence: ] After the $k$ iterations, the $k$th cycle is considered and, if it is the minimum yet considered, it is recorded.
-\item [Termination: ] When the loop terminates, $k = n$, so all possible cycles have been considered and the minumum cycle has been recoreded.
+\item [Maintenance: ] After the $k$ iterations, the $k$th cycle is considered and, if it is the minimum yet considered, it is recorded.
+\item [Termination: ] When the loop terminates, $k = n$, so all possible cycles have been considered and the minimum cycle has been recorded.
 \end{description}
 \subsubsection{Empirical Validation}
 \begin{figure}[H]
@@ -87,12 +87,12 @@ proc lower_bound(placed, remaining)
   add cost of all placed connections and cheapest edges from unplaced
 \end{lstlisting}
 \subsubsection{Time Complexity}
-If the prune step is removed, this algorithm will generate the entire search tree, which will cause the algorithm to become a scan of the entire solution space. Given that, in the worst case, no pruning occurs, worrst case time complexity for the algorithm is still $O(n!)$.
-\subsubsection{Correctnesss Proof}
+If the prune step is removed, this algorithm will generate the entire search tree, which will cause the algorithm to become a scan of the entire solution space. Given that, in the worst case, no pruning occurs, worst case time complexity for the algorithm is still $O(n!)$.
+\subsubsection{Correctness Proof}
 \begin{description}
 \item [Invariant: ] At the end of the $k$th loop, $k$ nodes of the search tree have been explored.
 \item [Initialization: ] Initially, $k = 0$, and only the source node is on the tree 
-\item [Maintenence: ] Each step, all children of the most promising node are added to the tree to be explored, and the $k$th most promising node has been explored
+\item [Maintenance: ] Each step, all children of the most promising node are added to the tree to be explored, and the $k$th most promising node has been explored
 \item [Termination: ] After $n!$ iterations, $n!$ options have been explored and the search tree has been completely explored.
 \end{description}
 \begin{figure}[H]
@@ -102,29 +102,37 @@ If the prune step is removed, this algorithm will generate the entire search tre
 \end{figure}
 Y axis in log scale.
 \subsection{Observations}
-
+Here we can again see a curvature on the y-log graph, which indicates a non-polynomial relationship. In this case, we can see the curve is less steep, indicating that the pruning element of the branch and bound algorithm is speeding up the search. This is also shown by the fact that a 10 node TSP can be solved in two-tenths of a second with branch and bound, whereas a brute force approach on the same graph takes 17 seconds. However, one weakness of the branch and bound approach is the need to find a good most promising node, and in cases like the 8 node TSP where the optimal path is not obvious, the algorithm can take much more time than average.
 \subsection{Dynamic Programming}
 \subsubsection{Pseudocode}
 \begin{lstlisting}[mathescape=true]
 proc dynamic_programming(G, s)
   cost $\gets \emptyset$
   for i in G.V - {s}
-    cost[{s, i}] = dist(s, i)
+    cost({s, i}, i) = dist(s, i)
   for n - 2
     for i in G.V - {s}
-     for $\forall$ n - 1 sized subsets
-       
-      
+      for $\forall$ n - 1 sized subsets S where $i \notin S$
+        cost(S + {i}, i) = min{cost(S, j) + dist(j, i)} where $j \neq s, j \neq i, j \in S$
+  return min{cost(S, i) + dist(i, s)} where $|S| = n$    
 \end{lstlisting}
 \subsubsection{Time complexity}
-The time complexity of connecting a new node is $\Theta(|V|)$, Bellman-Ford is $O(VE)$, removing the node is $\Theta(|V|)$, and creating the new weight function is $O(E)$. From here, we are updating every row of the new matrix, which has height $V$, by running Dijkstra's algorithm on each node. The time complexity of Dijkstra is depenedent on the data strucure in use, which will be explored later, if a Min Priority Heap is used, it will be $O(VElg(V))$, and it will be $O(V^2lg(V))$ if a Fibonnacci Heap is used.
+In order to generate all subsets of size $n$ ending at all points that are not the source, all $n - 1$ subsets ending at all points that are not the source must be generated. This creates the recurrance relation $T(n) = nT(n - 1) + c$, which expands to $T(n) = n((n - 1)T(n - 2) + d) + c$, which eventually exands to $1 * 2 * 3 * ... * (n - 1) * n + C = n!$, so the time complexity of this algorithm is still $O(n!)$ 
 \subsubsection{Correctness Proof}
 \begin{description}
-\item [Invariant: ] The shortest path from a source vertex $u$ to any vertex $v$ can be found by running Dijkstras algorithm on the reweighted graph, and then recalculating based on the original weight
-\item [Initialization: ] Initially, no sources have been selected, so the shortest path of all selected elements is found trivially.
-\item [Maintenence: ] On each loop iteration, Dijkstra's algorithm finds the shortest path to the reweighted edge, and then the shortest path to each vertex is found by recalculating based on the original graph weight.
-\item [Termination: ] When the loop terminates, Dijkstra's algorithm has been run on every vertex, finding the shortest path to all other vertices. Therefore all pairs shortest paths have been found.
+\item [Invariant: ] After the $k$th iteration of the loop, all $k + 2$ subsets ending in $i$ have been generated.
+\item [Initialization: ] Before the loop all 2 length subsets are generated.
+\item [Maintenence: ] On each loop iteration, each $k + 2$ subset ending in each of $n$ is generated.
+\item [Termination: ] When the loop terminates, $k = n - 2$, so all $n$ length subsets ending in $i  \forall  i  \in  n$ have been generated, and the minimum can be selected.
 \end{description}
+\begin{figure}[H]
+  \centering
+  \textbf{Dynamic Programming}\par\medskip
+  \includegraphics[width=1\linewidth]{DynamicProgramming.pdf}
+\end{figure}
+Y axis in log scale.
+\subsection{Observations}
+In the dynamic programming example, we can see a very nearly straight line on the y-log graph, however attempting to draw a straight edge reveals a slight curveture, indicating that the graph is still exponential. This graph does not have the same amount of variation that the branch and bound algorithm would have, as the bound on this algorithm is tighter, the same number of calculations are performed on all graphs of the same size, so the data are more regular.
 \subsection{Min Priority Heap}
 \subsubsection{Code Walkthrough}
 The Min Priority heap is implemented simply as a binary heap that maintains the heap
